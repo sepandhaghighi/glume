@@ -5,11 +5,10 @@ import os
 import sys
 from pathlib import Path
 from typing import List, Optional, Union, Dict
-from memor import Prompt, PromptTemplate, Session
+from memor import Prompt, PromptTemplate, TemplateEngine
 from glume.utils import load_gitignore_patterns, should_ignore, is_binary_file, build_tree_structure
 
-DEFAULT_TEMPLATE = """System Context: You are given a project directory dump. Use this code context to fulfill user requests accurately.
-
+DEFAULT_TEMPLATE = """
 {% if include_tree %}
 <folder_structure>
 {{ tree }}
@@ -113,6 +112,7 @@ class Glume:
         tree_str = build_tree_structure(self.target_dir, self.active_ignores) if self.include_tree else ""
 
         prompt_template = PromptTemplate(
+            engine=TemplateEngine.JINJA,
             content=self.custom_template,
             custom_map={
                 "files": files,
@@ -122,6 +122,4 @@ class Glume:
         )
 
         prompt = Prompt(template=prompt_template)
-        session = Session(title=f"Glume Pack: {self.target_dir.name}", messages=[prompt])
-
         return prompt.render()
