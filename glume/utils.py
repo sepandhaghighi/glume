@@ -5,6 +5,61 @@ import os
 import fnmatch
 from pathlib import Path
 from typing import List, Optional
+from .error import GlumeValidationError
+from .params import (
+    TARGET_DIR_TYPE_ERROR,
+    TARGET_DIR_EMPTY_ERROR,
+    TARGET_DIR_INVALID_ERROR,
+    CUSTOM_TEMPLATE_TYPE_ERROR,
+    IGNORE_PATTERNS_TYPE_ERROR,
+    IGNORE_PATTERN_TYPE_ERROR,
+    BOOLEAN_ARGUMENT_TYPE_ERROR,
+)
+
+
+def _validate_inputs(
+    target_dir,
+    custom_template,
+    ignore_patterns,
+    use_gitignore,
+    include_tree,
+    verbose,
+) -> None:
+    """Validate all inputs."""
+
+    if not isinstance(target_dir, (str, Path)):
+        raise GlumeValidationError(TARGET_DIR_TYPE_ERROR)
+
+    if isinstance(target_dir, str) and not target_dir.strip():
+        raise GlumeValidationError(TARGET_DIR_EMPTY_ERROR)
+
+    target_path = Path(target_dir).resolve()
+
+    if not target_path.is_dir():
+        raise GlumeValidationError(TARGET_DIR_INVALID_ERROR.format(path=target_path))
+
+    if custom_template is not None:
+        if not isinstance(custom_template, str) or not custom_template.strip():
+            raise GlumeValidationError(CUSTOM_TEMPLATE_TYPE_ERROR)
+
+    if ignore_patterns is not None:
+        if not isinstance(ignore_patterns, list):
+            raise GlumeValidationError(IGNORE_PATTERNS_TYPE_ERROR)
+
+        for index, pattern in enumerate(ignore_patterns):
+            if not isinstance(pattern, str) or not pattern.strip():
+                raise GlumeValidationError(IGNORE_PATTERN_TYPE_ERROR.format(index=index))
+
+    boolean_arguments = {
+        "use_gitignore": use_gitignore,
+        "include_tree": include_tree,
+        "verbose": verbose,
+    }
+
+    for name, value in boolean_arguments.items():
+        if not isinstance(value, bool):
+            raise GlumeValidationError(BOOLEAN_ARGUMENT_TYPE_ERROR.format(name=name))
+
 
 def load_gitignore_patterns(root_path: Path) -> List[str]:
     """Reads and parses .gitignore patterns using standard library."""
