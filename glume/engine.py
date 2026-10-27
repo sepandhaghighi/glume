@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
-from glume.utils import load_gitignore_patterns, should_ignore, is_binary_file, build_tree_structure
+from glume.utils import load_gitignore_patterns, should_ignore, is_binary_file, build_tree_structure, _validate_inputs
 
 DEFAULT_TEMPLATE = """
 {% if include_tree %}
@@ -35,6 +35,15 @@ class Glume:
         include_tree: bool = True,
         verbose: bool = False
     ):
+        _validate_inputs(
+            target_dir=target_dir,
+            custom_template=custom_template,
+            ignore_patterns=ignore_patterns,
+            use_gitignore=use_gitignore,
+            include_tree=include_tree,
+            verbose=verbose,
+        )
+
         self.target_dir = Path(target_dir).resolve()
         self.custom_template = custom_template or DEFAULT_TEMPLATE
         self.include_tree = include_tree
@@ -42,10 +51,11 @@ class Glume:
 
         # Compile total active ignore patterns
         active_ignores = list(ignore_patterns) if ignore_patterns else []
+
         if use_gitignore:
             git_ignores = load_gitignore_patterns(self.target_dir)
             active_ignores.extend(git_ignores)
-        
+
         self.active_ignores = active_ignores if active_ignores else None
 
         # Categorized tracking lists
