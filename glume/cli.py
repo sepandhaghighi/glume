@@ -111,6 +111,3 @@ def main():
             print("\n  [Failed to Read]:", file=sys.stderr)
             for f in stats['failed']:
                 print(f"    - {f['path']} ({f['error']})", file=sys.stderr)
-
-if __name__ == "__main__":
-    main()
