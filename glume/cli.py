@@ -56,7 +56,7 @@ def main():
     dir_path = Path(args.directory).resolve()
 
     if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == args.directory):
-        print(f"🧙 [Wizard Mode] Auto-packing current directory: {dir_path}", file=sys.stderr)
+        print(f"[Wizard Mode] Auto-packing current directory: {dir_path}", file=sys.stderr)
 
     template_content = None
     if args.template:
@@ -85,17 +85,17 @@ def main():
     if args.output:
         out_path = Path(args.output)
         out_path.write_text(result, encoding="utf-8")
-        print(f"✅ Context packed successfully into: {out_path}", file=sys.stderr)
+        print(f"Context packed successfully into: {out_path}", file=sys.stderr)
     else:
         sys.stdout.write(result)
 
     if args.stats:
         stats = packer.get_stats()
-        print("\n📊 --- Glume Execution Statistics ---", file=sys.stderr)
-        print(f"  • Included Files: {stats['included_count']}", file=sys.stderr)
-        print(f"  • Ignored Files:  {stats['ignored_count']}", file=sys.stderr)
-        print(f"  • Binary Files:   {stats['binary_count']}", file=sys.stderr)
-        print(f"  • Failed Files:   {stats['failed_count']}", file=sys.stderr)
+        print("\n--- Glume Execution Statistics ---", file=sys.stderr)
+        print(f"   Included Files: {stats['included_count']}", file=sys.stderr)
+        print(f"   Ignored Files:  {stats['ignored_count']}", file=sys.stderr)
+        print(f"   Binary Files:   {stats['binary_count']}", file=sys.stderr)
+        print(f"   Failed Files:   {stats['failed_count']}", file=sys.stderr)
 
         if stats['ignored']:
             print("\n  [Ignored]:", file=sys.stderr)
