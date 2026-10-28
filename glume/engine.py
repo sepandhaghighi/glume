@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
-from glume.utils import load_gitignore_patterns, should_ignore, is_binary_file, build_tree_structure, _validate_inputs
+from .utils import load_gitignore_patterns, should_ignore, is_binary_file, build_tree_structure, _validate_inputs
 
 DEFAULT_TEMPLATE = """
 {% if include_tree %}

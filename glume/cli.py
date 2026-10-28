@@ -4,7 +4,7 @@
 import sys
 import argparse
 from pathlib import Path
-from glume.engine import Glume
+from .engine import Glume
 
 def main():
     """Run the Glume command-line interface."""
