@@ -29,11 +29,11 @@ def _validate_inputs(
     Validate the arguments provided to Glume.
 
     :param target_dir: Root directory containing files to pack.
-    :param custom_template: Optional non-empty Jinja2 template string.
-    :param ignore_patterns: Optional list of non-empty glob patterns.
-    :param use_gitignore: If True, enables loading patterns from .gitignore.
-    :param include_tree: If True, enables directory tree inclusion.
-    :param verbose: If True, enables warnings for unreadable files.
+    :param custom_template: Optional Jinja2 template string for rendering the output.
+    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+    :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
+    :param include_tree: If True, includes the directory tree in the output.
+    :param verbose: If True, prints warnings when files cannot be read.
     """
 
     if not isinstance(target_dir, (str, Path)):
@@ -96,7 +96,7 @@ def should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> bo
     Determine whether a relative path matches any ignore pattern.
 
     :param rel_path_str: File or directory path relative to the target directory.
-    :param ignore_patterns: Optional list of glob patterns to match against the path.
+    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
     """
     if not ignore_patterns:
         return False
@@ -130,7 +130,7 @@ def build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]]) 
     Build a formatted directory tree while excluding ignored paths.
 
     :param root_path: Root directory from which to build the tree.
-    :param ignore_patterns: Optional list of glob patterns for excluding paths.
+    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
     """
     tree_lines = [f"{root_path.name}/"]
 
