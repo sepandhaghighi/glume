@@ -5,7 +5,7 @@ import os
 import fnmatch
 from pathlib import Path
 from typing import List, Optional
-from .error import GlumeValidationError
+from .errors import GlumeValidationError
 from .params import (
     TARGET_DIR_TYPE_ERROR,
     TARGET_DIR_EMPTY_ERROR,
