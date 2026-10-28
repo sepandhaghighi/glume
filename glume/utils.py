@@ -25,7 +25,16 @@ def _validate_inputs(
     include_tree,
     verbose,
 ) -> None:
-    """Validate all inputs."""
+    """
+    Validate the arguments provided to Glume.
+
+    :param target_dir: Root directory containing files to pack.
+    :param custom_template: Optional non-empty Jinja2 template string.
+    :param ignore_patterns: Optional list of non-empty glob patterns.
+    :param use_gitignore: If True, enables loading patterns from .gitignore.
+    :param include_tree: If True, enables directory tree inclusion.
+    :param verbose: If True, enables warnings for unreadable files.
+    """
 
     if not isinstance(target_dir, (str, Path)):
         raise GlumeValidationError(TARGET_DIR_TYPE_ERROR)
@@ -62,7 +71,11 @@ def _validate_inputs(
 
 
 def load_gitignore_patterns(root_path: Path) -> List[str]:
-    """Reads and parses .gitignore patterns using standard library."""
+    """
+    Load ignore patterns from the root directory's .gitignore file.
+
+    :param root_path: Root directory containing the .gitignore file.
+    """
     patterns = []
     gitignore_file = root_path / ".gitignore"
     if gitignore_file.is_file():
@@ -79,7 +92,12 @@ def load_gitignore_patterns(root_path: Path) -> List[str]:
 
 
 def should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> bool:
-    """Checks if a relative path matches any ignore patterns."""
+    """
+    Determine whether a relative path matches any ignore pattern.
+
+    :param rel_path_str: File or directory path relative to the target directory.
+    :param ignore_patterns: Optional list of glob patterns to match against the path.
+    """
     if not ignore_patterns:
         return False
     
@@ -94,6 +112,11 @@ def should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> bo
 
 
 def is_binary_file(file_path: Path) -> bool:
+    """
+    Determine whether a file contains binary data.
+
+    :param file_path: Path to the file being checked.
+    """
     try:
         with open(file_path, "tr", encoding="utf-8") as check_file:
             check_file.read(1024)
@@ -103,9 +126,21 @@ def is_binary_file(file_path: Path) -> bool:
 
 
 def build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]]) -> str:
+    """
+    Build a formatted directory tree while excluding ignored paths.
+
+    :param root_path: Root directory from which to build the tree.
+    :param ignore_patterns: Optional list of glob patterns for excluding paths.
+    """
     tree_lines = [f"{root_path.name}/"]
 
     def _build(dir_path: Path, prefix: str = ""):
+        """
+        Recursively append directory entries to the tree representation.
+
+        :param dir_path: Directory whose entries should be processed.
+        :param prefix: Prefix used to align entries in the directory tree.
+        """
         try:
             entries = sorted(list(dir_path.iterdir()), key=lambda e: (not e.is_dir(), e.name.lower()))
         except PermissionError:

@@ -7,6 +7,7 @@ from pathlib import Path
 from glume.engine import Glume
 
 def main():
+    """Run the Glume command-line interface."""
     parser = argparse.ArgumentParser(
         description="Glume: Nano file-to-text packer for LLM context windows using Memor."
     )
