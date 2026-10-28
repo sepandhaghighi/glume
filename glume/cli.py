@@ -84,7 +84,8 @@ def main():
 
     if args.output:
         out_path = Path(args.output)
-        out_path.write_text(result, encoding="utf-8")
+        with open(out_path, "w", encoding="utf-8") as f:
+            f.write(result)
         print(f"Context packed successfully into: {out_path}", file=sys.stderr)
     else:
         sys.stdout.write(result)
