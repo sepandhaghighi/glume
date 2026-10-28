@@ -6,22 +6,10 @@ import sys
 from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
+from .params import DEFAULT_TEMPLATE
 from .utils import load_gitignore_patterns, should_ignore, is_binary_file, build_tree_structure, _validate_inputs
 
-DEFAULT_TEMPLATE = """
-{% if include_tree %}
-<folder_structure>
-{{ tree }}
-</folder_structure>
-{% endif %}
 
-<source_files>
-{% for file in files %}
-<file path="{{ file.path }}" extension="{{ file.extension }}">
-{{ file.content }}
-</file>
-{% endfor %}
-</source_files>"""
 
 class Glume:
     """Pack directory files into a formatted text representation."""
