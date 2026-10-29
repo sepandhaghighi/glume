@@ -6,25 +6,13 @@ import sys
 from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
-from glume.utils import load_gitignore_patterns, should_ignore, is_binary_file, build_tree_structure, _validate_inputs
+from .params import DEFAULT_TEMPLATE
+from .utils import load_gitignore_patterns, should_ignore, is_binary_file, build_tree_structure, _validate_inputs
 
-DEFAULT_TEMPLATE = """
-{% if include_tree %}
-<folder_structure>
-{{ tree }}
-</folder_structure>
-{% endif %}
 
-<source_files>
-{% for file in files %}
-<file path="{{ file.path }}" extension="{{ file.extension }}">
-{{ file.content }}
-</file>
-{% endfor %}
-</source_files>"""
 
 class Glume:
-    """Glume: Nano File-to-Text Packer utilizing Memor natively as engine handler."""
+    """Pack directory files into a formatted text representation."""
 
     def __init__(
         self,
@@ -35,6 +23,16 @@ class Glume:
         include_tree: bool = True,
         verbose: bool = False
     ):
+        """
+        Initialize the Glume packer.
+
+        :param target_dir: Root directory containing files to pack.
+        :param custom_template: Optional Jinja2 template string for rendering the output.
+        :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+        :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
+        :param include_tree: If True, includes the directory tree in the output.
+        :param verbose: If True, prints warnings when files cannot be read.
+        """
         _validate_inputs(
             target_dir=target_dir,
             custom_template=custom_template,
@@ -65,6 +63,7 @@ class Glume:
         self.failed_files: List[Dict[str, str]] = []
 
     def collect_files(self) -> List[dict]:
+        """Collect readable, non-binary files from the target directory."""
         self.included_files = []
         self.ignored_files = []
         self.binary_files = []
@@ -104,7 +103,7 @@ class Glume:
         return collected_files
 
     def get_stats(self) -> dict:
-        """Returns detailed statistics about processed files."""
+        """Retrieve statistics about processed files."""
         return {
             "included_count": len(self.included_files),
             "ignored_count": len(self.ignored_files),
@@ -117,7 +116,7 @@ class Glume:
         }
 
     def pack(self) -> str:
-        """Packs the directory context and returns the rendered string via Memor."""
+        """Pack directory contents into a formatted text."""
         files = self.collect_files()
         tree_str = build_tree_structure(self.target_dir, self.active_ignores) if self.include_tree else ""
 

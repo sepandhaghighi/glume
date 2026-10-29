@@ -14,3 +14,18 @@ IGNORE_PATTERNS_TYPE_ERROR = "ignore_patterns must be a list of non-empty string
 IGNORE_PATTERN_TYPE_ERROR = "ignore_patterns[{index}] must be a non-empty string."
 
 BOOLEAN_ARGUMENT_TYPE_ERROR = "{name} must be a boolean."
+
+DEFAULT_TEMPLATE = """
+{% if include_tree %}
+<folder_structure>
+{{ tree }}
+</folder_structure>
+{% endif %}
+
+<source_files>
+{% for file in files %}
+<file path="{{ file.path }}" extension="{{ file.extension }}">
+{{ file.content }}
+</file>
+{% endfor %}
+</source_files>"""
