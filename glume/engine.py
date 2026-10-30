@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
 from .params import DEFAULT_TEMPLATE
-from .utils import load_gitignore_patterns, should_ignore, is_binary_file, build_tree_structure, _validate_inputs
+from .utils import _load_gitignore_patterns, _should_ignore, _is_binary_file, _build_tree_structure, _validate_inputs
 
 
 
@@ -50,7 +50,7 @@ class Glume:
         active_ignores = list(ignore_patterns) if ignore_patterns else []
 
         if use_gitignore:
-            git_ignores = load_gitignore_patterns(self._target_dir)
+            git_ignores = _load_gitignore_patterns(self._target_dir)
             active_ignores.extend(git_ignores)
 
         self._active_ignores = active_ignores if active_ignores else None
@@ -74,11 +74,11 @@ class Glume:
                 rel_path = full_path.relative_to(self._target_dir)
                 rel_path_str = str(rel_path).replace("\\", "/")
 
-                if should_ignore(rel_path_str, self._active_ignores):
+                if _should_ignore(rel_path_str, self._active_ignores):
                     self._ignored_files.append(rel_path_str)
                     continue
 
-                if is_binary_file(full_path):
+                if _is_binary_file(full_path):
                     self._binary_files.append(rel_path_str)
                     continue
 
@@ -116,7 +116,7 @@ class Glume:
     def pack(self) -> str:
         """Pack directory contents into a formatted text."""
         files = self.collect_files()
-        tree_str = build_tree_structure(self._target_dir, self._active_ignores) if self._include_tree else ""
+        tree_str = _build_tree_structure(self._target_dir, self._active_ignores) if self._include_tree else ""
 
         prompt_template = PromptTemplate(
             engine=TemplateEngine.JINJA,
