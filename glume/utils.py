@@ -4,7 +4,7 @@
 import os
 import fnmatch
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Any
 from .errors import GlumeValidationError
 from .params import (
     TARGET_DIR_TYPE_ERROR,
@@ -18,12 +18,12 @@ from .params import (
 
 
 def _validate_inputs(
-    target_dir,
-    custom_template,
-    ignore_patterns,
-    use_gitignore,
-    include_tree,
-    verbose,
+    target_dir: Any,
+    custom_template: Any,
+    ignore_patterns: Any,
+    use_gitignore: Any,
+    include_tree: Any,
+    verbose: Any,
 ) -> None:
     """
     Validate the arguments provided to Glume.
