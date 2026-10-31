@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
 from .params import DEFAULT_TEMPLATE
-from .utils import load_gitignore_patterns, should_ignore, is_binary_file, build_tree_structure, _validate_inputs
+from .utils import _load_gitignore_patterns, _should_ignore, _is_binary_file, _build_tree_structure, _validate_inputs
 
 
 
@@ -42,46 +42,44 @@ class Glume:
             verbose=verbose,
         )
 
-        self.target_dir = Path(target_dir).resolve()
-        self.custom_template = custom_template or DEFAULT_TEMPLATE
-        self.include_tree = include_tree
-        self.verbose = verbose
+        self._target_dir = Path(target_dir).resolve()
+        self._custom_template = custom_template or DEFAULT_TEMPLATE
+        self._include_tree = include_tree
+        self._verbose = verbose
 
-        # Compile total active ignore patterns
         active_ignores = list(ignore_patterns) if ignore_patterns else []
 
         if use_gitignore:
-            git_ignores = load_gitignore_patterns(self.target_dir)
+            git_ignores = _load_gitignore_patterns(self._target_dir)
             active_ignores.extend(git_ignores)
 
-        self.active_ignores = active_ignores if active_ignores else None
+        self._active_ignores = active_ignores if active_ignores else None
 
-        # Categorized tracking lists
-        self.included_files: List[str] = []
-        self.ignored_files: List[str] = []
-        self.binary_files: List[str] = []
-        self.failed_files: List[Dict[str, str]] = []
+        self._included_files: List[str] = []
+        self._ignored_files: List[str] = []
+        self._binary_files: List[str] = []
+        self._failed_files: List[Dict[str, str]] = []
 
     def collect_files(self) -> List[dict]:
         """Collect readable, non-binary files from the target directory."""
-        self.included_files = []
-        self.ignored_files = []
-        self.binary_files = []
-        self.failed_files = []
+        self._included_files = []
+        self._ignored_files = []
+        self._binary_files = []
+        self._failed_files = []
 
         collected_files = []
-        for root, _, files in os.walk(self.target_dir):
+        for root, _, files in os.walk(self._target_dir):
             for file in files:
                 full_path = Path(root) / file
-                rel_path = full_path.relative_to(self.target_dir)
+                rel_path = full_path.relative_to(self._target_dir)
                 rel_path_str = str(rel_path).replace("\\", "/")
 
-                if should_ignore(rel_path_str, self.active_ignores):
-                    self.ignored_files.append(rel_path_str)
+                if _should_ignore(rel_path_str, self._active_ignores):
+                    self._ignored_files.append(rel_path_str)
                     continue
 
-                if is_binary_file(full_path):
-                    self.binary_files.append(rel_path_str)
+                if _is_binary_file(full_path):
+                    self._binary_files.append(rel_path_str)
                     continue
 
                 try:
@@ -94,10 +92,10 @@ class Glume:
                         "extension": ext,
                         "content": content
                     })
-                    self.included_files.append(rel_path_str)
+                    self._included_files.append(rel_path_str)
                 except Exception as e:
-                    self.failed_files.append({"path": rel_path_str, "error": str(e)})
-                    if self.verbose:
+                    self._failed_files.append({"path": rel_path_str, "error": str(e)})
+                    if self._verbose:
                         print(f"Warning: Failed to read {rel_path_str}: {e}", file=sys.stderr)
 
         return collected_files
@@ -105,28 +103,28 @@ class Glume:
     def get_stats(self) -> dict:
         """Retrieve statistics about processed files."""
         return {
-            "included_count": len(self.included_files),
-            "ignored_count": len(self.ignored_files),
-            "binary_count": len(self.binary_files),
-            "failed_count": len(self.failed_files),
-            "included": self.included_files,
-            "ignored": self.ignored_files,
-            "binary": self.binary_files,
-            "failed": self.failed_files,
+            "included_count": len(self._included_files),
+            "ignored_count": len(self._ignored_files),
+            "binary_count": len(self._binary_files),
+            "failed_count": len(self._failed_files),
+            "included": self._included_files,
+            "ignored": self._ignored_files,
+            "binary": self._binary_files,
+            "failed": self._failed_files,
         }
 
     def pack(self) -> str:
         """Pack directory contents into a formatted text."""
         files = self.collect_files()
-        tree_str = build_tree_structure(self.target_dir, self.active_ignores) if self.include_tree else ""
+        tree_str = _build_tree_structure(self._target_dir, self._active_ignores) if self._include_tree else ""
 
         prompt_template = PromptTemplate(
             engine=TemplateEngine.JINJA,
-            content=self.custom_template,
+            content=self._custom_template,
             custom_map={
                 "files": files,
                 "tree": tree_str,
-                "include_tree": self.include_tree
+                "include_tree": self._include_tree
             }
         )
 

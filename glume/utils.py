@@ -4,7 +4,7 @@
 import os
 import fnmatch
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Any
 from .errors import GlumeValidationError
 from .params import (
     TARGET_DIR_TYPE_ERROR,
@@ -18,12 +18,12 @@ from .params import (
 
 
 def _validate_inputs(
-    target_dir,
-    custom_template,
-    ignore_patterns,
-    use_gitignore,
-    include_tree,
-    verbose,
+    target_dir: Any,
+    custom_template: Any,
+    ignore_patterns: Any,
+    use_gitignore: Any,
+    include_tree: Any,
+    verbose: Any,
 ) -> None:
     """
     Validate the arguments provided to Glume.
@@ -70,7 +70,7 @@ def _validate_inputs(
             raise GlumeValidationError(BOOLEAN_ARGUMENT_TYPE_ERROR.format(name=name))
 
 
-def load_gitignore_patterns(root_path: Path) -> List[str]:
+def _load_gitignore_patterns(root_path: Path) -> List[str]:
     """
     Load ignore patterns from the root directory's .gitignore file.
 
@@ -91,7 +91,7 @@ def load_gitignore_patterns(root_path: Path) -> List[str]:
     return patterns
 
 
-def should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> bool:
+def _should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> bool:
     """
     Determine whether a relative path matches any ignore pattern.
 
@@ -111,7 +111,7 @@ def should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> bo
     return False
 
 
-def is_binary_file(file_path: Path) -> bool:
+def _is_binary_file(file_path: Path) -> bool:
     """
     Determine whether a file contains binary data.
 
@@ -125,7 +125,7 @@ def is_binary_file(file_path: Path) -> bool:
         return True
 
 
-def build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]]) -> str:
+def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]]) -> str:
     """
     Build a formatted directory tree while excluding ignored paths.
 
@@ -150,7 +150,7 @@ def build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]]) 
         for entry in entries:
             rel_path = entry.relative_to(root_path)
             rel_path_str = str(rel_path).replace("\\", "/") + ("/" if entry.is_dir() else "")
-            if not should_ignore(rel_path_str.rstrip("/"), ignore_patterns):
+            if not _should_ignore(rel_path_str.rstrip("/"), ignore_patterns):
                 valid_entries.append(entry)
 
         count = len(valid_entries)
