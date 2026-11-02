@@ -77,12 +77,11 @@ class Glume:
                 if _should_ignore(rel_path_str, self._active_ignores):
                     self._ignored_files.append(rel_path_str)
                     continue
-
-                if _is_binary_file(full_path):
-                    self._binary_files.append(rel_path_str)
-                    continue
-
+                
                 try:
+                    if _is_binary_file(full_path):
+                        self._binary_files.append(rel_path_str)
+                        continue
                     with open(full_path, "r", encoding="utf-8", errors="replace") as f:
                         content = f.read()
 

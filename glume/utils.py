@@ -118,11 +118,11 @@ def _is_binary_file(file_path: Path) -> bool:
     :param file_path: Path to the file being checked.
     """
     try:
-        with open(file_path, "tr", encoding="utf-8") as check_file:
-            check_file.read(1024)
-            return False
-    except UnicodeDecodeError:
-        return True
+        with open(file_path, "rb") as check_file:
+            chunk = check_file.read(1024)
+            return b"\0" in chunk
+    except OSError:
+        return False
 
 
 def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]]) -> str:
