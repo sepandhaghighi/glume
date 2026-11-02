@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
 from .params import DEFAULT_TEMPLATE
-from .utils import _load_gitignore_patterns, _should_ignore, _is_binary_file, _build_tree_structure, _validate_inputs
+from .utils import _load_gitignore_patterns, _should_ignore, _is_binary_file, _build_tree_structure, _validate_inputs, _walk_directory
 
 
 
@@ -68,7 +68,7 @@ class Glume:
         self._failed_files = []
 
         collected_files = []
-        for root, _, files in os.walk(self._target_dir):
+        for root, files in _walk_directory(self._target_dir, self._active_ignores):
             for file in files:
                 full_path = Path(root) / file
                 rel_path = full_path.relative_to(self._target_dir)
