@@ -111,6 +111,53 @@ def _should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> b
     return False
 
 
+def _filter_ignored_directories(
+    root: Path,
+    directories: List[str],
+    target_dir: Path,
+    ignore_patterns: Optional[List[str]],
+) -> List[str]:
+    """
+    Filter ignored directories from a list of directory names.
+
+    :param root: Current directory being traversed.
+    :param directories: List of directory names to filter.
+    :param target_dir: Root directory containing files to pack.
+    :param ignore_patterns: Optional list of glob patterns to ignore.
+    """
+    return [
+        directory
+        for directory in directories
+        if not _should_ignore(
+            (root / directory).relative_to(target_dir).as_posix(),
+            ignore_patterns,
+        )
+    ]
+
+
+def _walk_directory(
+    target_dir: Path,
+    ignore_patterns: Optional[List[str]],
+):
+    """
+    Walk through a directory tree while skipping ignored directories.
+
+    :param target_dir: Root directory containing files to pack.
+    :param ignore_patterns: Optional list of glob patterns to ignore.
+    """
+    for root, dirs, files in os.walk(target_dir):
+        current_dir = Path(root)
+
+        dirs[:] = _filter_ignored_directories(
+            current_dir,
+            dirs,
+            target_dir,
+            ignore_patterns,
+        )
+
+        yield current_dir, files
+
+
 def _is_binary_file(file_path: Path) -> bool:
     """
     Determine whether a file contains binary data.
