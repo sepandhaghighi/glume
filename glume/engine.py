@@ -56,14 +56,14 @@ class Glume:
         self._active_ignores = active_ignores if active_ignores else None
 
         self._included_files: List[str] = []
-        self._ignored_files: List[str] = []
+        self._ignored_paths: List[str] = []
         self._binary_files: List[str] = []
         self._failed_files: List[Dict[str, str]] = []
 
     def collect_files(self) -> List[dict]:
         """Collect readable, non-binary files from the target directory."""
         self._included_files = []
-        self._ignored_files = []
+        self._ignored_paths = []
         self._binary_files = []
         self._failed_files = []
 
@@ -76,7 +76,7 @@ class Glume:
                 self._target_dir,
                 self._active_ignores,
             )
-            self._ignored_files.extend(ignored_dirs)
+            self._ignored_paths.extend(ignored_dirs)
             dirs[:] = filtered_dirs
             for file in files:
                 full_path = Path(root) / file
@@ -84,7 +84,7 @@ class Glume:
                 rel_path_str = str(rel_path).replace("\\", "/")
 
                 if _should_ignore(rel_path_str, self._active_ignores):
-                    self._ignored_files.append(rel_path_str)
+                    self._ignored_paths.append(rel_path_str)
                     continue
                 
                 try:
@@ -112,11 +112,11 @@ class Glume:
         """Retrieve statistics about processed files."""
         return {
             "included_count": len(self._included_files),
-            "ignored_count": len(self._ignored_files),
+            "ignored_count": len(self._ignored_paths),
             "binary_count": len(self._binary_files),
             "failed_count": len(self._failed_files),
             "included": self._included_files,
-            "ignored": self._ignored_files,
+            "ignored": self._ignored_paths,
             "binary": self._binary_files,
             "failed": self._failed_files,
         }
