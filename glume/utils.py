@@ -116,46 +116,27 @@ def _filter_ignored_directories(
     directories: List[str],
     target_dir: Path,
     ignore_patterns: Optional[List[str]],
-) -> List[str]:
+) -> tuple:
     """
-    Filter ignored directories from a list of directory names.
+    Filter ignored directories and return their names.
 
     :param root: Current directory being traversed.
     :param directories: List of directory names to filter.
     :param target_dir: Root directory containing files to pack.
     :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
     """
-    return [
-        directory
-        for directory in directories
-        if not _should_ignore(
-            (root / directory).relative_to(target_dir).as_posix(),
-            ignore_patterns,
-        )
-    ]
+    ignored = []
+    filtered = []
 
+    for directory in directories:
+        rel_path = (root / directory).relative_to(target_dir).as_posix()
 
-def _walk_directory(
-    target_dir: Path,
-    ignore_patterns: Optional[List[str]],
-):
-    """
-    Walk through a directory tree while skipping ignored directories.
+        if _should_ignore(rel_path, ignore_patterns):
+            ignored.append(rel_path)
+        else:
+            filtered.append(directory)
 
-    :param target_dir: Root directory containing files to pack.
-    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
-    """
-    for root, dirs, files in os.walk(target_dir):
-        current_dir = Path(root)
-
-        dirs[:] = _filter_ignored_directories(
-            current_dir,
-            dirs,
-            target_dir,
-            ignore_patterns,
-        )
-
-        yield current_dir, files
+    return filtered, ignored
 
 
 def _is_binary_file(file_path: Path) -> bool:
