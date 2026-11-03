@@ -123,7 +123,7 @@ def _filter_ignored_directories(
     :param root: Current directory being traversed.
     :param directories: List of directory names to filter.
     :param target_dir: Root directory containing files to pack.
-    :param ignore_patterns: Optional list of glob patterns to ignore.
+    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
     """
     return [
         directory
@@ -143,7 +143,7 @@ def _walk_directory(
     Walk through a directory tree while skipping ignored directories.
 
     :param target_dir: Root directory containing files to pack.
-    :param ignore_patterns: Optional list of glob patterns to ignore.
+    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
     """
     for root, dirs, files in os.walk(target_dir):
         current_dir = Path(root)
