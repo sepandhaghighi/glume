@@ -94,14 +94,14 @@ def main():
         stats = packer.get_stats()
         print("\n--- Glume Execution Statistics ---", file=sys.stderr)
         print(f"   Included Files: {stats['included_count']}", file=sys.stderr)
-        print(f"   Ignored Files:  {stats['ignored_count']}", file=sys.stderr)
+        print(f"   Ignored Paths:  {stats['ignored_count']}", file=sys.stderr)
         print(f"   Binary Files:   {stats['binary_count']}", file=sys.stderr)
         print(f"   Failed Files:   {stats['failed_count']}", file=sys.stderr)
 
         if stats['ignored']:
-            print("\n  [Ignored]:", file=sys.stderr)
-            for f in stats['ignored']:
-                print(f"    - {f}", file=sys.stderr)
+            print("\n  [Ignored Paths]:", file=sys.stderr)
+            for p in stats['ignored']:
+                print(f"    - {p}", file=sys.stderr)
 
         if stats['binary']:
             print("\n  [Binary Skipped]:", file=sys.stderr)
