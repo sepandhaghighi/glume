@@ -55,7 +55,7 @@ def test_validation_error_for_invalid_ignore_patterns_type(tmp_path, patterns):
 
 @pytest.mark.parametrize("pattern", [123, "", "   ", None])
 def test_validation_error_for_invalid_ignore_pattern(tmp_path, pattern):
-    with pytest.raises(GlumeValidationError, match="ignore_patterns[0] must be a non-empty string."):
+    with pytest.raises(GlumeValidationError, match=r"ignore_patterns\[0\] must be a non-empty string."):
         Glume(target_dir=tmp_path, ignore_patterns=[pattern])
 
 
