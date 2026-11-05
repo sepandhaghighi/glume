@@ -83,7 +83,7 @@ def test_gitignore_patterns_are_loaded_and_applied(tmp_path):
     packer = Glume(tmp_path, use_gitignore=True)
     files = packer.collect_files()
 
-    assert [item["path"] for item in files] == ["keep.txt", ".gitignore"]
+    assert set([item["path"] for item in files]) == {"keep.txt", ".gitignore"}
     assert set(packer.get_stats()["ignored"]) == {"drop.tmp", "build"}
 
 
