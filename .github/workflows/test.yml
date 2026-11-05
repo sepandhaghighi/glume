@@ -56,7 +56,7 @@ jobs:
       - name: Vulture, Bandit and Pydocstyle tests
         run: |
           python -m vulture glume/ otherfiles/ setup.py --min-confidence 65 --exclude=__init__.py --sort-by-size
-          python -m bandit -r glume -s B311,B105
+          python -m bandit -r glume -s B110
           python -m pydocstyle -v
       - name: Version check
         run: |
