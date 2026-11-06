@@ -84,33 +84,16 @@ python -m glume ./my-project -o context.txt
 
 #### Options
 
-  -----------------------------------------------------------------------
-  Option             Description                    Default
-  ------------------ ------------------------------ ---------------------
-  `directory`        Target directory to pack       Current directory
-                                                    (`.`)
-
-  `-o, --output`     Output file path               Standard output
-
-  `-t, --template`   Path to a custom Jinja2        Built-in template
-                     template file                  
-
-  `--no-tree`        Disable directory structure    Enabled
-                     tree inclusion                 
-
-  `-i, --ignore`     Glob patterns to ignore (can   None
-                     be used multiple times)        
-
-  `--git-ignore`     Load and apply rules from the  Disabled
-                     project's `.gitignore` file    
-
-  `-v, --verbose`    Display warnings for           Disabled
-                     unreadable files               
-
-  `--stats`          Display detailed file          Disabled
-                     processing statistics          
-  -----------------------------------------------------------------------
-
+| Option           | Description                                               | Default           |
+| ---------------- | --------------------------------------------------------- | ----------------- |
+| `directory`      | Target directory to pack                                  | `.`               |
+| `-o, --output`   | Output file path                                          | Standard output   |
+| `-t, --template` | Path to a custom Jinja2 template file                     | Built-in template |
+| `--no-tree`      | Disable directory structure tree inclusion                | Enabled           |
+| `-i, --ignore`   | Glob patterns to ignore (can be used multiple times)      | None              |
+| `--git-ignore`   | Load and apply rules from the project's `.gitignore` file | Disabled          |
+| `-v, --verbose`  | Display warnings for unreadable files                     | Disabled          |
+| `--stats`        | Display detailed file processing statistics               | Disabled          |
 
 ### Library
 
@@ -133,33 +116,14 @@ with open("context.txt", "w", encoding="utf-8") as f:
 
 #### Parameters
 
-  ---------------------------------------------------------------------------
-  Parameter            Type          Description             Default
-  -------------------- ------------- ----------------------- ----------------
-  `target_dir`         `str` or      Root directory          `"."`
-                       `Path`        containing files to     
-                                     pack                    
-
-  `custom_template`    `str` or      Custom Jinja2 template  Built-in
-                       `None`        string for rendering    template
-                                     the output              
-
-  `ignore_patterns`    `list[str]`   Glob patterns for files `None`
-                       or `None`     and directories to      
-                                     ignore                  
-
-  `use_gitignore`      `bool`        Load ignore patterns    `False`
-                                     from the root           
-                                     directory's             
-                                     `.gitignore` file       
-
-  `include_tree`       `bool`        Include the directory   `True`
-                                     structure tree in the   
-                                     output                  
-
-  `verbose`            `bool`        Display warnings when   `False`
-                                     files cannot be read    
-  ---------------------------------------------------------------------------
+| Parameter         | Type                  | Description                                                      | Default           |
+| ----------------- | --------------------- | ---------------------------------------------------------------- | ----------------- |
+| `target_dir`      | `str` or `Path`       | Root directory containing files to pack                          | `"."`             |
+| `custom_template` | `str` or `None`       | Custom Jinja2 template string for rendering the output           | Built-in template |
+| `ignore_patterns` | `list[str]` or `None` | Glob patterns for files and directories to ignore                | `None`            |
+| `use_gitignore`   | `bool`                | Load ignore patterns from the root directory's `.gitignore` file | `False`           |
+| `include_tree`    | `bool`                | Include the directory structure tree in the output               | `True`            |
+| `verbose`         | `bool`                | Display warnings when files cannot be read                       | `False`           |
 
 #### Statistics
 
