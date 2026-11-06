@@ -35,7 +35,6 @@ def _validate_inputs(
     :param include_tree: If True, includes the directory tree in the output.
     :param verbose: If True, prints warnings when files cannot be read.
     """
-
     if not isinstance(target_dir, (str, Path)):
         raise GlumeValidationError(TARGET_DIR_TYPE_ERROR)
 
