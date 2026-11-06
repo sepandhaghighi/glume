@@ -14,14 +14,23 @@ def read_description() -> str:
             description += c.read()
         return description
     except Exception:
-        return '''TODO'''
+        return '''Glume is a lightweight Python tool for packing project files into a
+        structured text representation optimized for LLM context windows.
+        It collects readable files from a target directory and combines their contents into
+        a single formatted output, including an optional directory structure
+        tree.
+        Glume supports customizable Jinja2 templates, glob-based ignore
+        patterns, automatic gitignore integration, and file processing
+        statistics. It can be used both as a CLI tool and as an importable
+        Python library.
+        '''
 
 
 setup(
     name='glume',
     packages=['glume'],
     version='0.1',
-    description='Glume: TODO',
+    description='Glume: A Nano File-to-Text Packer for LLM Context Windows',
     long_description=read_description(),
     long_description_content_type='text/markdown',
     include_package_data=True,
@@ -29,7 +38,7 @@ setup(
     author_email='me@sepand.tech',
     url='https://github.com/sepandhaghighi/glume',
     download_url='https://github.com/sepandhaghighi/glume/tarball/v0.1',
-    keywords='TODO',
+    keywords='glume python llm large-language-models llm-context context-window prompt-engineering prompt-management code-context memor jinja2 cli developer-tools',
     project_urls={
         'Source': 'https://github.com/sepandhaghighi/glume'
     },
@@ -50,8 +59,10 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: Education',
         'Topic :: Software Development :: Libraries',
-        'Topic :: Software Development :: User Interfaces',
         'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: Software Development :: Build Tools',
+        'Topic :: Text Processing',
+        'Topic :: Text Processing :: Markup',
         'Topic :: Utilities',
         'Topic :: Terminals',
     ],
