@@ -15,7 +15,6 @@ structured text representation optimized for LLM context windows.
 It collects readable files from a target directory and combines their contents into
 a single formatted output, including an optional directory structure
 tree.
-
 Glume supports customizable Jinja2 templates, glob-based ignore
 patterns, automatic gitignore integration, and file processing
 statistics. It can be used both as a CLI tool and as an importable
