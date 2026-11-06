@@ -14,15 +14,11 @@ def read_description() -> str:
             description += c.read()
         return description
     except Exception:
-        return '''Glume is a lightweight Python tool for packing project files into a
-        structured text representation optimized for LLM context windows.
-        It collects readable files from a target directory and combines their contents into
-        a single formatted output, including an optional directory structure
-        tree.
-        Glume supports customizable Jinja2 templates, glob-based ignore
-        patterns, automatic gitignore integration, and file processing
-        statistics. It can be used both as a CLI tool and as an importable
-        Python library.
+        return '''Glume is a lightweight Python tool for packing project files into a structured text representation
+        optimized for LLM context windows. It collects readable files from a target directory and combines 
+        their contents into a single formatted output, optionally including the directory structure tree.
+        Glume supports customizable Jinja2 templates, glob-based ignore patterns, automatic .gitignore integration,
+        and file processing statistics. It can be used both as a CLI tool and as an importable Python library.
         '''
 
 
