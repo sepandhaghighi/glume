@@ -1,6 +1,6 @@
 <div align="center">
 <img src="https://github.com/sepandhaghighi/glume/raw/main/otherfiles/logo.png" width="320">
-<h1>Glume: TODO</h1>
+<h1>Glume: A Nano File-to-Text Packer for LLM Context Windows</h1>
 <br/>
 <a href="https://www.python.org/"><img src="https://img.shields.io/badge/built%20with-Python3-green.svg" alt="built with Python3"></a>
 <a href="https://github.com/sepandhaghighi/glume"><img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/sepandhaghighi/glume"></a>
@@ -10,7 +10,16 @@
 ## Overview	
 
 <p align="justify">
-TODO
+Glume is a lightweight Python tool for packing project files into a
+structured text representation optimized for LLM context windows.
+It collects readable files from a target directory and combines their contents into
+a single formatted output, including an optional directory structure
+tree.
+
+Glume supports customizable Jinja2 templates, glob-based ignore
+patterns, automatic gitignore integration, and file processing
+statistics. It can be used both as a CLI tool and as an importable
+Python library.
 </p>
 
 <table>
@@ -53,9 +62,138 @@ TODO
 
 ## Usage
 
-TODO
+Glume can be used both as a CLI tool and as a Python library.
 
-</div>
+### CLI
+
+``` bash
+python -m glume
+```
+
+Pack a specific directory:
+
+``` bash
+python -m glume ./my-project
+```
+
+Save the packed output to a file:
+
+``` bash
+python -m glume ./my-project -o context.txt
+```
+
+#### Options
+
+  -----------------------------------------------------------------------
+  Option             Description                    Default
+  ------------------ ------------------------------ ---------------------
+  `directory`        Target directory to pack       Current directory
+                                                    (`.`)
+
+  `-o, --output`     Output file path               Standard output
+
+  `-t, --template`   Path to a custom Jinja2        Built-in template
+                     template file                  
+
+  `--no-tree`        Disable directory structure    Enabled
+                     tree inclusion                 
+
+  `-i, --ignore`     Glob patterns to ignore (can   None
+                     be used multiple times)        
+
+  `--git-ignore`     Load and apply rules from the  Disabled
+                     project's `.gitignore` file    
+
+  `-v, --verbose`    Display warnings for           Disabled
+                     unreadable files               
+
+  `--stats`          Display detailed file          Disabled
+                     processing statistics          
+  -----------------------------------------------------------------------
+
+
+### Library
+
+``` python
+from glume import Glume
+
+packer = Glume(
+    target_dir="./my-project",
+    ignore_patterns=["*.pyc", "__pycache__"],
+    use_gitignore=True,
+    include_tree=True,
+    verbose=False
+)
+
+result = packer.pack()
+
+with open("context.txt", "w", encoding="utf-8") as f:
+    f.write(result)
+```
+
+#### Parameters
+
+  ---------------------------------------------------------------------------
+  Parameter            Type          Description             Default
+  -------------------- ------------- ----------------------- ----------------
+  `target_dir`         `str` or      Root directory          `"."`
+                       `Path`        containing files to     
+                                     pack                    
+
+  `custom_template`    `str` or      Custom Jinja2 template  Built-in
+                       `None`        string for rendering    template
+                                     the output              
+
+  `ignore_patterns`    `list[str]`   Glob patterns for files `None`
+                       or `None`     and directories to      
+                                     ignore                  
+
+  `use_gitignore`      `bool`        Load ignore patterns    `False`
+                                     from the root           
+                                     directory's             
+                                     `.gitignore` file       
+
+  `include_tree`       `bool`        Include the directory   `True`
+                                     structure tree in the   
+                                     output                  
+
+  `verbose`            `bool`        Display warnings when   `False`
+                                     files cannot be read    
+  ---------------------------------------------------------------------------
+
+#### Statistics
+
+You can retrieve file processing statistics after packing:
+
+``` python
+stats = packer.get_stats()
+
+print(stats["included_count"])
+print(stats["ignored_count"])
+print(stats["binary_count"])
+print(stats["failed_count"])
+```
+
+#### Custom Template
+
+Glume supports custom Jinja2 templates for formatting the packed output.
+
+``` python
+custom_template = """
+{% for file in files %}
+### {{ file.path }}
+
+{{ file.content }}
+{% endfor %}
+"""
+
+packer = Glume(
+    target_dir="./my-project",
+    custom_template=custom_template
+)
+
+result = packer.pack()
+```
 
 ## Issues & Bug Reports			
 
