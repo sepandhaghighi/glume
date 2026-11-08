@@ -5,6 +5,7 @@
 <a href="https://www.python.org/"><img src="https://img.shields.io/badge/built%20with-Python3-green.svg" alt="built with Python3"></a>
 <a href="https://github.com/sepandhaghighi/glume"><img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/sepandhaghighi/glume"></a>
 <a href="https://badge.fury.io/py/glume"><img src="https://badge.fury.io/py/glume.svg" alt="PyPI version"></a>
+<a href="https://codecov.io/github/sepandhaghighi/glume"><img src="https://codecov.io/github/sepandhaghighi/glume/graph/badge.svg?token=r1iHLFmBef"></a>
 </div>			
 				
 ## Overview	
