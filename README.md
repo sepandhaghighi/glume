@@ -39,6 +39,13 @@ Glume supports customizable Jinja2 templates, glob-based ignore patterns, automa
 		<td align="center"><img src="https://github.com/sepandhaghighi/glume/actions/workflows/test.yml/badge.svg?branch=dev"></td>
 	</tr>
 </table>
+<table>
+    <tr> 
+        <td align="center">Code Quality</td>
+        <td align="center"><a href="https://www.codefactor.io/repository/github/sepandhaghighi/glume"><img src="https://www.codefactor.io/repository/github/sepandhaghighi/glume/badge" alt="CodeFactor"></a></td>
+        <td align="center"><a href="https://app.codacy.com/gh/sepandhaghighi/glume/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade"><img src="https://app.codacy.com/project/badge/Grade/a44aab24b2384431ae522dd0a8ae2866"></a></td>
+    </tr>
+</table>
 
 ## Installation		
 
