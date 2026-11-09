@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ## [0.1] - 2026-xx-xx
 ### Added
-- Item1
-- Item2
-- Item3
+- `Glume` class
+- `GlumeError` class
+- `GlumeValidationError` class
+- Command line interface
+- Test system
 
 [Unreleased]: https://github.com/sepandhaghighi/glume/compare/v0.1...dev
 [0.1]: https://github.com/sepandhaghighi/glume/compare/56232c8...v0.1
