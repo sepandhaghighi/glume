@@ -5,6 +5,7 @@
 <a href="https://www.python.org/"><img src="https://img.shields.io/badge/built%20with-Python3-green.svg" alt="built with Python3"></a>
 <a href="https://github.com/sepandhaghighi/glume"><img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/sepandhaghighi/glume"></a>
 <a href="https://badge.fury.io/py/glume"><img src="https://badge.fury.io/py/glume.svg" alt="PyPI version"></a>
+<a href="https://codecov.io/github/sepandhaghighi/glume"><img src="https://codecov.io/github/sepandhaghighi/glume/graph/badge.svg?token=r1iHLFmBef"></a>
 </div>			
 				
 ## Overview	
@@ -38,6 +39,13 @@ Glume supports customizable Jinja2 templates, glob-based ignore patterns, automa
 		<td align="center"><img src="https://github.com/sepandhaghighi/glume/actions/workflows/test.yml/badge.svg?branch=main"></td>
 		<td align="center"><img src="https://github.com/sepandhaghighi/glume/actions/workflows/test.yml/badge.svg?branch=dev"></td>
 	</tr>
+</table>
+<table>
+    <tr> 
+        <td align="center">Code Quality</td>
+        <td align="center"><a href="https://www.codefactor.io/repository/github/sepandhaghighi/glume"><img src="https://www.codefactor.io/repository/github/sepandhaghighi/glume/badge" alt="CodeFactor"></a></td>
+        <td align="center"><a href="https://app.codacy.com/gh/sepandhaghighi/glume/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade"><img src="https://app.codacy.com/project/badge/Grade/a44aab24b2384431ae522dd0a8ae2866"></a></td>
+    </tr>
 </table>
 
 ## Installation		
