@@ -41,7 +41,7 @@ setup(
     install_requires=['memor>=1.4'],
     python_requires='>=3.8',
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 3 - Alpha',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.8',
