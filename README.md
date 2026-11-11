@@ -119,8 +119,8 @@ with open("context.txt", "w", encoding="utf-8") as f:
 | Parameter         | Type                  | Description                                                      | Default           |
 | ----------------- | --------------------- | ---------------------------------------------------------------- | ----------------- |
 | `target_dir`      | `str` or `Path`       | Root directory containing files to pack                          | `"."`             |
-| `custom_template` | `str` or `None`       | Custom Jinja2 template string for rendering the output           | Built-in template |
-| `ignore_patterns` | `list[str]` or `None` | Glob patterns for files and directories to ignore                | `None`            |
+| `custom_template` | `str`                 | Custom Jinja2 template string for rendering the output           | Built-in template |
+| `ignore_patterns` | `list[str]`           | Glob patterns for files and directories to ignore                | `None`            |
 | `use_gitignore`   | `bool`                | Load ignore patterns from the root directory's `.gitignore` file | `False`           |
 | `include_tree`    | `bool`                | Include the directory structure tree in the output               | `True`            |
 | `verbose`         | `bool`                | Display warnings when files cannot be read                       | `False`           |
