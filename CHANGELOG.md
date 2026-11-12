@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - `README.md` updated
+- Output mirroring bug fixed
 ## [0.1] - 2026-11-10
 ### Added
 - `Glume` class
