@@ -56,8 +56,11 @@ def main():
     dir_path = Path(args.directory).resolve()
     if args.output:
         output_path = Path(args.output).resolve()
-        if output_path.is_relative_to(dir_path):
-            args.ignore = (args.ignore or []) + [output_path.relative_to(dir_path).as_posix()]
+        try:
+            relative_output = output_path.relative_to(dir_path)
+            args.ignore = (args.ignore or []) + [relative_output.as_posix()]
+        except ValueError:
+            pass
 
     if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == args.directory):
         print(f"[Wizard Mode] Auto-packing current directory: {dir_path}", file=sys.stderr)
