@@ -151,3 +151,33 @@ def test_cli_invalid_arguments_show_argparse_error(monkeypatch):
         run_cli(monkeypatch, ["--unknown-option"])
 
     assert exc.value.code == 2
+
+
+def test_cli_adds_output_file_to_ignore_patterns(monkeypatch, tmp_path):
+    source = tmp_path / "source"
+    source.mkdir()
+    output = source / "context.txt"
+    captured = {}
+
+    def fake_init(self, **kwargs):
+        captured.update(kwargs)
+
+    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="packed"):
+        run_cli(monkeypatch, [str(source), "--output", str(output)])
+
+    assert captured["ignore_patterns"] == ["context.txt"]
+
+
+def test_cli_does_not_add_external_output_to_ignore_patterns(monkeypatch, tmp_path):
+    source = tmp_path / "source"
+    source.mkdir()
+    output = tmp_path / "context.txt"
+    captured = {}
+
+    def fake_init(self, **kwargs):
+        captured.update(kwargs)
+
+    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="packed"):
+        run_cli(monkeypatch, [str(source), "--output", str(output)])
+
+    assert captured["ignore_patterns"] is None
