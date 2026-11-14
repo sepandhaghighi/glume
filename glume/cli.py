@@ -18,6 +18,11 @@ def main():
         help="Target directory to pack (default: current directory)"
     )
     parser.add_argument(
+        "--directory",
+        dest="directory_optional",
+        help="Target directory to pack (overrides positional directory)"
+    )
+    parser.add_argument(
         "-o", "--output",
         help="Output file path (default: prints to stdout)"
     )
@@ -53,7 +58,8 @@ def main():
     )
 
     args = parser.parse_args()
-    dir_path = Path(args.directory).resolve()
+    directory = args.directory_optional if args.directory_optional is not None else args.directory
+    dir_path = Path(directory).resolve()
     if args.output:
         output_path = Path(args.output).resolve()
         try:
@@ -62,7 +68,7 @@ def main():
         except ValueError:
             pass
 
-    if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == args.directory):
+    if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == args.directory) or (len(sys.argv) == 3 and sys.argv[1] == "--directory"):
         print(f"[Wizard Mode] Auto-packing current directory: {dir_path}", file=sys.stderr)
 
     template_content = None

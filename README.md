@@ -86,7 +86,8 @@ python -m glume ./my-project -o context.txt
 
 | Option           | Description                                               | Default           |
 | ---------------- | --------------------------------------------------------- | ----------------- |
-| `directory`      | Target directory to pack                                  | `.`               |
+| `directory`      | Target directory to pack (positional argument)            | `.`               |
+| `--directory`    | Target directory to pack (optional argument)              | None              |
 | `-o, --output`   | Output file path                                          | Standard output   |
 | `-t, --template` | Path to a custom Jinja2 template file                     | Built-in template |
 | `--no-tree`      | Disable directory structure tree inclusion                | Enabled           |
@@ -94,6 +95,9 @@ python -m glume ./my-project -o context.txt
 | `--git-ignore`   | Load and apply rules from the project's `.gitignore` file | Disabled          |
 | `-v, --verbose`  | Display warnings for unreadable files                     | Disabled          |
 | `--stats`        | Display detailed file processing statistics               | Disabled          |
+
+> [!NOTE]
+> `--directory` replaces `directory` if both are provided.
 
 ### Library
 
