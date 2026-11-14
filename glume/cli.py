@@ -54,6 +54,13 @@ def main():
 
     args = parser.parse_args()
     dir_path = Path(args.directory).resolve()
+    if args.output:
+        output_path = Path(args.output).resolve()
+        try:
+            relative_output = output_path.relative_to(dir_path)
+            args.ignore = (args.ignore or []) + [relative_output.as_posix()]
+        except ValueError:
+            pass
 
     if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == args.directory):
         print(f"[Wizard Mode] Auto-packing current directory: {dir_path}", file=sys.stderr)
