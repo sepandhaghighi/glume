@@ -18,6 +18,11 @@ def main():
         help="Target directory to pack (default: current directory)"
     )
     parser.add_argument(
+        "--directory",
+        dest="directory_optional",
+        help="Target directory to pack (overrides positional directory)"
+    )
+    parser.add_argument(
         "-o", "--output",
         help="Output file path (default: prints to stdout)"
     )
