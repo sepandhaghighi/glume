@@ -58,7 +58,8 @@ def main():
     )
 
     args = parser.parse_args()
-    dir_path = Path(args.directory).resolve()
+    directory = args.directory_optional if args.directory_optional is not None else args.directory
+    dir_path = Path(directory).resolve()
     if args.output:
         output_path = Path(args.output).resolve()
         try:
