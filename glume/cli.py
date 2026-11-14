@@ -68,7 +68,7 @@ def main():
         except ValueError:
             pass
 
-    if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == args.directory):
+    if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == args.directory) or (len(sys.argv) == 3 and sys.argv[1] == "--directory"):
         print(f"[Wizard Mode] Auto-packing current directory: {dir_path}", file=sys.stderr)
 
     template_content = None
