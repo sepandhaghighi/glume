@@ -95,6 +95,7 @@ python -m glume ./my-project -o context.txt
 | `--git-ignore`   | Load and apply rules from the project's `.gitignore` file | Disabled          |
 | `-v, --verbose`  | Display warnings for unreadable files                     | Disabled          |
 | `--stats`        | Display detailed file processing statistics               | Disabled          |
+| `--version`      | Display Glume version                                     | Disabled          |
 
 > [!NOTE]
 > `--directory` replaces `directory` if both are provided.
