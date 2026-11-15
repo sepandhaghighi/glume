@@ -181,3 +181,55 @@ def test_cli_does_not_add_external_output_to_ignore_patterns(monkeypatch, tmp_pa
         run_cli(monkeypatch, [str(source), "--output", str(output)])
 
     assert captured["ignore_patterns"] is None
+
+
+def test_cli_optional_directory_argument(monkeypatch, tmp_path):
+    source = tmp_path / "source"
+    source.mkdir()
+    captured = {}
+
+    def fake_init(self, **kwargs):
+        captured.update(kwargs)
+
+    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="packed"):
+        run_cli(monkeypatch, ["--directory", str(source)])
+
+    assert captured["target_dir"] == source.resolve()
+
+
+def test_cli_optional_directory_overrides_positional(monkeypatch, tmp_path):
+    positional_source = tmp_path / "positional"
+    optional_source = tmp_path / "optional"
+    positional_source.mkdir()
+    optional_source.mkdir()
+
+    captured = {}
+
+    def fake_init(self, **kwargs):
+        captured.update(kwargs)
+
+    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="packed"):
+        run_cli(
+            monkeypatch,
+            [
+                str(positional_source),
+                "--directory",
+                str(optional_source),
+            ],
+        )
+
+    assert captured["target_dir"] == optional_source.resolve()
+
+
+def test_cli_positional_directory_still_works(monkeypatch, tmp_path):
+    source = tmp_path / "source"
+    source.mkdir()
+    captured = {}
+
+    def fake_init(self, **kwargs):
+        captured.update(kwargs)
+
+    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="packed"):
+        run_cli(monkeypatch, [str(source)])
+
+    assert captured["target_dir"] == source.resolve()
