@@ -39,8 +39,8 @@ jobs:
       - name: Smoke test
         run: |
           python -c "from glume import *"
-          # python -m glume --version
-          # glume --version
+          python -m glume --version
+          glume --version
       - name: Dev requirements installation
         run: |
           pip install --upgrade --upgrade-strategy=only-if-needed -r requirements-dev.txt
@@ -76,5 +76,5 @@ jobs:
           mkdir wheel_test
           cd wheel_test
           python -c "from glume import *"
-          # python -m glume --version
-          # glume --version
+          python -m glume --version
+          glume --version
