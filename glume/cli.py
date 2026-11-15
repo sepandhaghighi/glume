@@ -4,12 +4,18 @@
 import sys
 import argparse
 from pathlib import Path
+from .params import GLUME_VERSION
 from .engine import Glume
 
 def main():
     """Run the Glume command-line interface."""
     parser = argparse.ArgumentParser(
         description="Glume: Nano file-to-text packer for LLM context windows using Memor."
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=GLUME_VERSION
     )
     parser.add_argument(
         "directory",

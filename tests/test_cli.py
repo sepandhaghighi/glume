@@ -233,3 +233,11 @@ def test_cli_positional_directory_still_works(monkeypatch, tmp_path):
         run_cli(monkeypatch, [str(source)])
 
     assert captured["target_dir"] == source.resolve()
+
+
+def test_cli_version_argument(monkeypatch, capsys):
+    with pytest.raises(SystemExit) as exc:
+        run_cli(monkeypatch, ["--version"])
+
+    assert exc.value.code == 0
+    assert capsys.readouterr().out.strip() == "0.1"

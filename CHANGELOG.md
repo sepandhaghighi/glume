@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - `--directory` CLI argument
+- `--version` CLI argument
 ### Changed
 - `README.md` updated
+- Test system modified
 - Output mirroring bug fixed
 ## [0.1] - 2026-11-10
 ### Added
