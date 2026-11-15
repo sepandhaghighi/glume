@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 import pytest
 import glume.cli
+from glume.params import GLUME_VERSION
 
 
 def run_cli(monkeypatch, args):
@@ -275,4 +276,4 @@ def test_cli_version_argument(monkeypatch, capsys):
         run_cli(monkeypatch, ["--version"])
 
     assert exc.value.code == 0
-    assert capsys.readouterr().out.strip() == "0.1"
+    assert capsys.readouterr().out.strip() == GLUME_VERSION
