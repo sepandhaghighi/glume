@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - `--directory` CLI argument
 - `--version` CLI argument
+- `--info` CLI argument
 ### Changed
 - `README.md` updated
 - Test system modified
