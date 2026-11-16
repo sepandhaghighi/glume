@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 import pytest
 import glume.cli
+from glume.params import GLUME_VERSION
 
 
 def run_cli(monkeypatch, args):
@@ -36,6 +37,41 @@ def test_cli_wizard_mode_prints_to_stderr(monkeypatch, tmp_path, capsys):
 
     with patch("glume.cli.Glume.pack", return_value="result"):
         run_cli(monkeypatch, [])
+
+    captured = capsys.readouterr()
+    assert "[Wizard Mode] Auto-packing current directory:" in captured.err
+    assert captured.out == "result"
+
+
+def test_cli_wizard_mode_with_explicit_current_directory(monkeypatch, tmp_path, capsys):
+    monkeypatch.chdir(tmp_path)
+
+    with patch("glume.cli.Glume.pack", return_value="result"):
+        run_cli(monkeypatch, ["."])
+
+    captured = capsys.readouterr()
+    assert "[Wizard Mode] Auto-packing current directory:" in captured.err
+    assert captured.out == "result"
+
+
+def test_cli_does_not_enter_wizard_mode_for_other_directory(monkeypatch, tmp_path, capsys):
+    source = tmp_path / "source"
+    source.mkdir()
+    monkeypatch.chdir(tmp_path)
+
+    with patch("glume.cli.Glume.pack", return_value="result"):
+        run_cli(monkeypatch, [str(source)])
+
+    captured = capsys.readouterr()
+    assert "[Wizard Mode]" not in captured.err
+    assert captured.out == "result"
+
+
+def test_cli_wizard_mode_with_optional_current_directory(monkeypatch, tmp_path, capsys):
+    monkeypatch.chdir(tmp_path)
+
+    with patch("glume.cli.Glume.pack", return_value="result"):
+        run_cli(monkeypatch, ["--directory", "."])
 
     captured = capsys.readouterr()
     assert "[Wizard Mode] Auto-packing current directory:" in captured.err
@@ -240,4 +276,4 @@ def test_cli_version_argument(monkeypatch, capsys):
         run_cli(monkeypatch, ["--version"])
 
     assert exc.value.code == 0
-    assert capsys.readouterr().out.strip() == "0.1"
+    assert capsys.readouterr().out.strip() == GLUME_VERSION

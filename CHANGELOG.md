@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `README.md` updated
 - Test system modified
 - Output mirroring bug fixed
+- Wizard mode bug fixed
 ## [0.1] - 2026-11-10
 ### Added
 - `Glume` class
