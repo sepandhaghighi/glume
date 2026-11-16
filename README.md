@@ -96,6 +96,7 @@ python -m glume ./my-project -o context.txt
 | `-v, --verbose`  | Display warnings for unreadable files                     | Disabled          |
 | `--stats`        | Display detailed file processing statistics               | Disabled          |
 | `--version`      | Display Glume version                                     | Disabled          |
+| `--info`         | Display Glume info                                        | Disabled          |
 
 > [!NOTE]
 > `--directory` replaces `directory` if both are provided.
