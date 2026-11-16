@@ -6,7 +6,7 @@ import argparse
 from art import text2art
 from typio import type_print, TypeMode
 from pathlib import Path
-from .params import GLUME_VERSION, OVERVIEW
+from .params import GLUME_VERSION, GLUME_REPO, OVERVIEW
 from .engine import Glume
 
 def _print_glume_help() -> None:
@@ -14,7 +14,7 @@ def _print_glume_help() -> None:
     type_print(text2art("Glume"), mode=TypeMode.LINE, delay=0.1)
     type_print(text2art("V:" + GLUME_VERSION), mode=TypeMode.LINE, delay=0.1)
     type_print(OVERVIEW, mode=TypeMode.CHAR, delay=0.05)
-    type_print("Repo : https://github.com/sepandhaghighi/glume", mode=TypeMode.CHAR, delay=0.05)
+    type_print(f"Repo : {GLUME_REPO}", mode=TypeMode.CHAR, delay=0.05)
 
 def main():
     """Run the Glume command-line interface."""
