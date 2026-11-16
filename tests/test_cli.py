@@ -280,9 +280,8 @@ def test_cli_version_argument(monkeypatch, capsys):
 
 
 def test_cli_info_argument(monkeypatch, capsys):
-    with pytest.raises(SystemExit) as exc:
-        run_cli(monkeypatch, ["--info"])
+    run_cli(monkeypatch, ["--info"])
 
-    assert exc.value.code == 0
-    assert GLUME_REPO in capsys.readouterr().out.strip()
-    assert OVERVIEW in capsys.readouterr().out.strip()
+    captured = capsys.readouterr()
+    assert GLUME_REPO in captured.out
+    assert OVERVIEW in captured.out
