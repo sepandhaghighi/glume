@@ -38,7 +38,7 @@ setup(
     project_urls={
         'Source': 'https://github.com/sepandhaghighi/glume'
     },
-    install_requires=['memor>=1.4'],
+    install_requires=['memor>=1.4', 'art>=1.8', 'typio>=0.4'],
     python_requires='>=3.8',
     classifiers=[
         'Development Status :: 3 - Alpha',

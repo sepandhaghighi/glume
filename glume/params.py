@@ -3,6 +3,13 @@
 
 GLUME_VERSION = "0.1"
 
+GLUME_REPO = "https://github.com/sepandhaghighi/glume"
+
+OVERVIEW = """Glume is a lightweight Python tool for packing project files into a structured text representation optimized for LLM context windows.
+It collects readable files from a target directory and combines their contents into a single formatted output, optionally including the directory structure tree.
+Glume supports customizable Jinja2 templates, glob-based ignore patterns, automatic .gitignore integration, and file processing statistics.
+It can be used both as a CLI tool and as an importable Python library.
+"""
 
 TARGET_DIR_TYPE_ERROR = "target_dir must be a string or pathlib.Path."
 TARGET_DIR_EMPTY_ERROR = "target_dir must not be empty."

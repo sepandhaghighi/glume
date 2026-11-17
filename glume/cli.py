@@ -3,9 +3,18 @@
 
 import sys
 import argparse
+from art import text2art
+from typio import type_print, TypeMode
 from pathlib import Path
-from .params import GLUME_VERSION
+from .params import GLUME_VERSION, GLUME_REPO, OVERVIEW
 from .engine import Glume
+
+def _print_glume_help() -> None:
+    """Print Glume details."""
+    type_print(text2art("Glume"), mode=TypeMode.LINE, delay=0.1)
+    type_print(text2art("V:" + GLUME_VERSION), mode=TypeMode.LINE, delay=0.1)
+    type_print(OVERVIEW, mode=TypeMode.CHAR, delay=0.05)
+    type_print(f"Repo : {GLUME_REPO}", mode=TypeMode.CHAR, delay=0.05)
 
 def main():
     """Run the Glume command-line interface."""
@@ -16,6 +25,11 @@ def main():
         "--version",
         action="version",
         version=GLUME_VERSION
+    )
+    parser.add_argument(
+        "--info",
+        action="store_true",
+        help="Display Glume info"
     )
     parser.add_argument(
         "directory",
@@ -64,6 +78,9 @@ def main():
     )
 
     args = parser.parse_args()
+    if args.info:
+        _print_glume_help()
+        return
     directory = args.directory_optional if args.directory_optional is not None else args.directory
     dir_path = Path(directory).resolve()
     if args.output:
