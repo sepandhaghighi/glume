@@ -92,7 +92,7 @@ class Glume:
                     self._ignored_paths.append(rel_path_str)
                     continue
 
-                if self._active_includes and not _matches_patterns(rel_path_str, self._active_includes):
+                if self._active_includes and not _should_include(rel_path_str, self._active_includes):
                     continue
                 
                 try:
