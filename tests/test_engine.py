@@ -12,6 +12,44 @@ def test_initializes_with_defaults(tmp_path):
     assert packer._include_tree is True
     assert packer._verbose is False
     assert packer._active_ignores is None
+    assert packer._active_includes is None
+
+
+def test_initializes_with_include_patterns(tmp_path):
+    packer = Glume(
+        target_dir=tmp_path,
+        include_patterns=["*.py", "*.md"]
+    )
+
+    assert packer._active_includes == ["*.py", "*.md"]
+
+
+def test_collect_files_applies_include_patterns(tmp_path):
+    (tmp_path / "main.py").write_text("python", encoding="utf-8")
+    (tmp_path / "readme.md").write_text("markdown", encoding="utf-8")
+    (tmp_path / "config.json").write_text("json", encoding="utf-8")
+
+    packer = Glume(tmp_path, include_patterns=["*.py", "*.md"])
+    files = packer.collect_files()
+
+    assert {item["path"] for item in files} == {"main.py", "readme.md"}
+
+
+def test_collect_files_ignore_patterns_take_precedence(tmp_path):
+    (tmp_path / "main.py").write_text("main", encoding="utf-8")
+    (tmp_path / "test_main.py").write_text("test", encoding="utf-8")
+    (tmp_path / "readme.md").write_text("readme", encoding="utf-8")
+
+    packer = Glume(
+        tmp_path,
+        include_patterns=["*.py", "*.md"],
+        ignore_patterns=["test_*.py"]
+    )
+
+    files = packer.collect_files()
+
+    assert {item["path"] for item in files} == {"main.py", "readme.md"}
+    assert packer.get_stats()["ignored"] == ["test_main.py"]
 
 
 def test_initializes_with_custom_options(tmp_path):

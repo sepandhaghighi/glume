@@ -27,6 +27,7 @@ def test_cli_default_arguments(monkeypatch, tmp_path):
     assert captured["target_dir"] == tmp_path.resolve()
     assert captured["custom_template"] is None
     assert captured["ignore_patterns"] is None
+    assert captured["include_patterns"] is None
     assert captured["use_gitignore"] is False
     assert captured["include_tree"] is True
     assert captured["verbose"] is False
@@ -106,6 +107,7 @@ def test_cli_custom_template_and_flags(monkeypatch, tmp_path):
             [
                 str(source), "--template", str(template),
                 "--no-tree", "--ignore", "*.log", "--ignore", "cache",
+                "--include", "*.py", "--include", "*.md",
                 "--git-ignore", "--verbose",
             ],
         )
@@ -113,6 +115,7 @@ def test_cli_custom_template_and_flags(monkeypatch, tmp_path):
     assert captured["custom_template"] == "{{ files|length }}"
     assert captured["include_tree"] is False
     assert captured["ignore_patterns"] == ["*.log", "cache"]
+    assert captured["include_patterns"] == ["*.py", "*.md"]
     assert captured["use_gitignore"] is True
     assert captured["verbose"] is True
 

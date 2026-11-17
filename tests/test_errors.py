@@ -59,6 +59,18 @@ def test_validation_error_for_invalid_ignore_pattern(tmp_path, pattern):
         Glume(target_dir=tmp_path, ignore_patterns=[pattern])
 
 
+@pytest.mark.parametrize("patterns", ["*.py", (), 123])
+def test_validation_error_for_invalid_include_patterns_type(tmp_path, patterns):
+    with pytest.raises(GlumeValidationError, match="include_patterns must be a list of non-empty strings or None"):
+        Glume(target_dir=tmp_path, include_patterns=patterns)
+
+
+@pytest.mark.parametrize("pattern", [123, "", "   ", None])
+def test_validation_error_for_invalid_include_pattern(tmp_path, pattern):
+    with pytest.raises(GlumeValidationError, match=r"include_patterns\[0\] must be a non-empty string."):
+        Glume(target_dir=tmp_path, include_patterns=[pattern])
+
+
 @pytest.mark.parametrize("argument", ["use_gitignore", "include_tree", "verbose"])
 def test_validation_error_for_non_boolean_flags(tmp_path, argument):
     values = {"use_gitignore": False, "include_tree": True, "verbose": False}
