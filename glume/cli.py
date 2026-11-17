@@ -62,6 +62,12 @@ def main():
         help="Glob patterns to ignore (can be used multiple times)"
     )
     parser.add_argument(
+        "--include",
+        action="append",
+        default=None,
+        help="Glob patterns to include (can be used multiple times)"
+    )
+    parser.add_argument(
         "--git-ignore",
         action="store_true",
         help="Automatically load and apply rules from the project's .gitignore file"
@@ -109,7 +115,8 @@ def main():
         ignore_patterns=args.ignore,
         use_gitignore=args.git_ignore,
         include_tree=not args.no_tree,
-        verbose=args.verbose
+        verbose=args.verbose,
+        include_patterns=args.include
     )
 
     try:
