@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `--directory` CLI argument
 - `--version` CLI argument
 - `--info` CLI argument
+- `--include` CLI argument
+- `include_patterns` parameter
 ### Changed
 - `README.md` updated
 - Test system modified
