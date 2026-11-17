@@ -102,6 +102,26 @@ def _load_gitignore_patterns(root_path: Path) -> List[str]:
     return patterns
 
 
+def _matches_patterns(rel_path_str: str, patterns: Optional[List[str]]) -> bool:
+    """
+    Determine whether a relative path matches any glob pattern.
+
+    :param rel_path_str: File or directory path relative to the target directory.
+    :param patterns: Optional list of glob patterns.
+    """
+    if not patterns:
+        return False
+
+    path_obj = Path(rel_path_str)
+    for pattern in patterns:
+        # Match against full relative path, file name, or directory components
+        if fnmatch.fnmatch(rel_path_str, pattern) or fnmatch.fnmatch(path_obj.name, pattern):
+            return True
+        if any(fnmatch.fnmatch(part, pattern.rstrip("/")) for part in path_obj.parts):
+            return True
+    return False
+
+
 def _should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> bool:
     """
     Determine whether a relative path matches any ignore pattern.
@@ -109,17 +129,17 @@ def _should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> b
     :param rel_path_str: File or directory path relative to the target directory.
     :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
     """
-    if not ignore_patterns:
-        return False
-    
-    path_obj = Path(rel_path_str)
-    for pattern in ignore_patterns:
-        # Match against full relative path, file name, or directory components
-        if fnmatch.fnmatch(rel_path_str, pattern) or fnmatch.fnmatch(path_obj.name, pattern):
-            return True
-        if any(fnmatch.fnmatch(part, pattern.rstrip("/")) for part in path_obj.parts):
-            return True
-    return False
+    return _matches_patterns(rel_path_str, ignore_patterns)
+
+
+def _should_include(rel_path_str: str, include_patterns: Optional[List[str]]) -> bool:
+    """
+    Determine whether a relative path matches any include pattern.
+
+    :param rel_path_str: File or directory path relative to the target directory.
+    :param include_patterns: Optional list of glob patterns for files to include.
+    """
+    return _matches_patterns(rel_path_str, include_patterns)
 
 
 def _filter_ignored_directories(
