@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
 from .params import DEFAULT_TEMPLATE
-from .utils import _load_gitignore_patterns, _should_ignore, _is_binary_file, _build_tree_structure, _validate_inputs, _filter_ignored_directories
+from .utils import _load_gitignore_patterns, _should_ignore, _should_include, _is_binary_file, _build_tree_structure, _validate_inputs, _filter_ignored_directories
 
 
 
@@ -19,6 +19,7 @@ class Glume:
         target_dir: Union[str, Path] = ".",
         custom_template: Optional[str] = None,
         ignore_patterns: Optional[List[str]] = None,
+        include_patterns: Optional[List[str]] = None,
         use_gitignore: bool = False,
         include_tree: bool = True,
         verbose: bool = False
@@ -29,6 +30,7 @@ class Glume:
         :param target_dir: Root directory containing files to pack.
         :param custom_template: Optional Jinja2 template string for rendering the output.
         :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+        :param include_patterns: Optional list of glob patterns for files to include.
         :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
         :param include_tree: If True, includes the directory tree in the output.
         :param verbose: If True, prints warnings when files cannot be read.
@@ -37,6 +39,7 @@ class Glume:
             target_dir=target_dir,
             custom_template=custom_template,
             ignore_patterns=ignore_patterns,
+            include_patterns=include_patterns,
             use_gitignore=use_gitignore,
             include_tree=include_tree,
             verbose=verbose,
@@ -54,6 +57,7 @@ class Glume:
             active_ignores.extend(git_ignores)
 
         self._active_ignores = active_ignores if active_ignores else None
+        self._active_includes = list(include_patterns) if include_patterns else None
 
         self._included_files: List[str] = []
         self._ignored_paths: List[str] = []
@@ -83,8 +87,12 @@ class Glume:
                 rel_path = full_path.relative_to(self._target_dir)
                 rel_path_str = str(rel_path).replace("\\", "/")
 
+                # Ignore patterns always take precedence over include patterns.
                 if _should_ignore(rel_path_str, self._active_ignores):
                     self._ignored_paths.append(rel_path_str)
+                    continue
+
+                if self._active_includes and not _matches_patterns(rel_path_str, self._active_includes):
                     continue
                 
                 try:
