@@ -13,6 +13,8 @@ from .params import (
     CUSTOM_TEMPLATE_TYPE_ERROR,
     IGNORE_PATTERNS_TYPE_ERROR,
     IGNORE_PATTERN_TYPE_ERROR,
+    INCLUDE_PATTERNS_TYPE_ERROR,
+    INCLUDE_PATTERN_TYPE_ERROR,
     BOOLEAN_ARGUMENT_TYPE_ERROR,
 )
 
@@ -21,6 +23,7 @@ def _validate_inputs(
     target_dir: Any,
     custom_template: Any,
     ignore_patterns: Any,
+    include_patterns: Any,
     use_gitignore: Any,
     include_tree: Any,
     verbose: Any,
@@ -31,6 +34,7 @@ def _validate_inputs(
     :param target_dir: Root directory containing files to pack.
     :param custom_template: Optional Jinja2 template string for rendering the output.
     :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+    :param include_patterns: Optional list of glob patterns for files to include.
     :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
     :param include_tree: If True, includes the directory tree in the output.
     :param verbose: If True, prints warnings when files cannot be read.
@@ -57,6 +61,14 @@ def _validate_inputs(
         for index, pattern in enumerate(ignore_patterns):
             if not isinstance(pattern, str) or not pattern.strip():
                 raise GlumeValidationError(IGNORE_PATTERN_TYPE_ERROR.format(index=index))
+    
+    if include_patterns is not None:
+        if not isinstance(include_patterns, list):
+            raise GlumeValidationError(INCLUDE_PATTERNS_TYPE_ERROR)
+
+        for index, pattern in enumerate(include_patterns):
+            if not isinstance(pattern, str) or not pattern.strip():
+                raise GlumeValidationError(INCLUDE_PATTERN_TYPE_ERROR.format(index=index))
 
     boolean_arguments = {
         "use_gitignore": use_gitignore,
