@@ -127,25 +127,43 @@ def _filter_ignored_directories(
     directories: List[str],
     target_dir: Path,
     ignore_patterns: Optional[List[str]],
+    include_patterns: Optional[List[str]] = None,
 ) -> tuple:
     """
-    Filter ignored directories and return their names.
+    Filter ignored and non-included directories.
 
     :param root: Current directory being traversed.
     :param directories: List of directory names to filter.
     :param target_dir: Root directory containing files to pack.
-    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+    :param ignore_patterns: Optional list of patterns for paths to ignore.
+    :param include_patterns: Optional list of patterns for paths to include.
     """
     ignored = []
     filtered = []
 
     for directory in directories:
-        rel_path = (root / directory).relative_to(target_dir).as_posix()
+        dir_path = root / directory
+        rel_path = dir_path.relative_to(target_dir).as_posix()
 
         if _matches_patterns(rel_path, ignore_patterns):
             ignored.append(rel_path)
-        else:
-            filtered.append(directory)
+            continue
+
+        if include_patterns:
+            has_included_files = any(
+                _matches_patterns(
+                    (Path(current_root) / file).relative_to(target_dir).as_posix(),
+                    include_patterns
+                )
+                for current_root, _, files in os.walk(dir_path)
+                for file in files
+            )
+
+            if not has_included_files:
+                ignored.append(rel_path)
+                continue
+
+        filtered.append(directory)
 
     return filtered, ignored
 
