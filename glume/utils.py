@@ -34,7 +34,7 @@ def _validate_inputs(
     :param target_dir: Root directory containing files to pack.
     :param custom_template: Optional Jinja2 template string for rendering the output.
     :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
-    :param include_patterns: Optional list of glob patterns for files to include.
+    :param include_patterns: Optional list of glob patterns for files and directories to include.
     :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
     :param include_tree: If True, includes the directory tree in the output.
     :param verbose: If True, prints warnings when files cannot be read.
