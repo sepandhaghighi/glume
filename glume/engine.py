@@ -87,7 +87,6 @@ class Glume:
                 rel_path = full_path.relative_to(self._target_dir)
                 rel_path_str = str(rel_path).replace("\\", "/")
 
-                # Ignore patterns always take precedence over include patterns.
                 if _matches_patterns(rel_path_str, self._active_ignores):
                     self._ignored_paths.append(rel_path_str)
                     continue
