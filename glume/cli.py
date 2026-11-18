@@ -62,6 +62,12 @@ def main():
         help="Glob patterns to ignore (can be used multiple times)"
     )
     parser.add_argument(
+        "--include",
+        action="append",
+        default=None,
+        help="Glob patterns to include (can be used multiple times)"
+    )
+    parser.add_argument(
         "--git-ignore",
         action="store_true",
         help="Automatically load and apply rules from the project's .gitignore file"
@@ -107,6 +113,7 @@ def main():
         target_dir=dir_path,
         custom_template=template_content,
         ignore_patterns=args.ignore,
+        include_patterns=args.include,
         use_gitignore=args.git_ignore,
         include_tree=not args.no_tree,
         verbose=args.verbose

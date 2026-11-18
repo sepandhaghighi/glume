@@ -13,6 +13,8 @@ from .params import (
     CUSTOM_TEMPLATE_TYPE_ERROR,
     IGNORE_PATTERNS_TYPE_ERROR,
     IGNORE_PATTERN_TYPE_ERROR,
+    INCLUDE_PATTERNS_TYPE_ERROR,
+    INCLUDE_PATTERN_TYPE_ERROR,
     BOOLEAN_ARGUMENT_TYPE_ERROR,
 )
 
@@ -21,6 +23,7 @@ def _validate_inputs(
     target_dir: Any,
     custom_template: Any,
     ignore_patterns: Any,
+    include_patterns: Any,
     use_gitignore: Any,
     include_tree: Any,
     verbose: Any,
@@ -31,6 +34,7 @@ def _validate_inputs(
     :param target_dir: Root directory containing files to pack.
     :param custom_template: Optional Jinja2 template string for rendering the output.
     :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+    :param include_patterns: Optional list of glob patterns for files and directories to include.
     :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
     :param include_tree: If True, includes the directory tree in the output.
     :param verbose: If True, prints warnings when files cannot be read.
@@ -57,6 +61,14 @@ def _validate_inputs(
         for index, pattern in enumerate(ignore_patterns):
             if not isinstance(pattern, str) or not pattern.strip():
                 raise GlumeValidationError(IGNORE_PATTERN_TYPE_ERROR.format(index=index))
+    
+    if include_patterns is not None:
+        if not isinstance(include_patterns, list):
+            raise GlumeValidationError(INCLUDE_PATTERNS_TYPE_ERROR)
+
+        for index, pattern in enumerate(include_patterns):
+            if not isinstance(pattern, str) or not pattern.strip():
+                raise GlumeValidationError(INCLUDE_PATTERN_TYPE_ERROR.format(index=index))
 
     boolean_arguments = {
         "use_gitignore": use_gitignore,
@@ -90,18 +102,18 @@ def _load_gitignore_patterns(root_path: Path) -> List[str]:
     return patterns
 
 
-def _should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> bool:
+def _matches_patterns(rel_path_str: str, patterns: Optional[List[str]]) -> bool:
     """
-    Determine whether a relative path matches any ignore pattern.
+    Determine whether a relative path matches any glob pattern.
 
     :param rel_path_str: File or directory path relative to the target directory.
-    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+    :param patterns: Optional list of glob patterns.
     """
-    if not ignore_patterns:
+    if not patterns:
         return False
-    
+
     path_obj = Path(rel_path_str)
-    for pattern in ignore_patterns:
+    for pattern in patterns:
         # Match against full relative path, file name, or directory components
         if fnmatch.fnmatch(rel_path_str, pattern) or fnmatch.fnmatch(path_obj.name, pattern):
             return True
@@ -130,7 +142,7 @@ def _filter_ignored_directories(
     for directory in directories:
         rel_path = (root / directory).relative_to(target_dir).as_posix()
 
-        if _should_ignore(rel_path, ignore_patterns):
+        if _matches_patterns(rel_path, ignore_patterns):
             ignored.append(rel_path)
         else:
             filtered.append(directory)
@@ -177,7 +189,7 @@ def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]])
         for entry in entries:
             rel_path = entry.relative_to(root_path)
             rel_path_str = str(rel_path).replace("\\", "/") + ("/" if entry.is_dir() else "")
-            if not _should_ignore(rel_path_str.rstrip("/"), ignore_patterns):
+            if not _matches_patterns(rel_path_str.rstrip("/"), ignore_patterns):
                 valid_entries.append(entry)
 
         count = len(valid_entries)

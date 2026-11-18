@@ -12,7 +12,7 @@
 
 <p align="justify">
 Glume is a lightweight Python tool for packing project files into a structured text representation optimized for LLM context windows. It collects readable files from a target directory and combines their contents into a single formatted output, optionally including the directory structure tree.
-Glume supports customizable Jinja2 templates, glob-based ignore patterns, automatic <code>.gitignore</code> integration, and file processing statistics. It can be used both as a CLI tool and as an importable Python library.
+Glume supports customizable Jinja2 templates, glob-based include and ignore patterns, automatic <code>.gitignore</code> integration, and file processing statistics. It can be used both as a CLI tool and as an importable Python library.
 </p>
 
 <table>
@@ -92,6 +92,7 @@ python -m glume ./my-project -o context.txt
 | `-t, --template` | Path to a custom Jinja2 template file                     | Built-in template |
 | `--no-tree`      | Disable directory structure tree inclusion                | Enabled           |
 | `-i, --ignore`   | Glob patterns to ignore (can be used multiple times)      | None              |
+| `--include`      | Glob patterns to include (can be used multiple times)     | None              |
 | `--git-ignore`   | Load and apply rules from the project's `.gitignore` file | Disabled          |
 | `-v, --verbose`  | Display warnings for unreadable files                     | Disabled          |
 | `--stats`        | Display detailed file processing statistics               | Disabled          |
@@ -109,6 +110,7 @@ from glume import Glume
 packer = Glume(
     target_dir="./my-project",
     ignore_patterns=["*.pyc", "__pycache__"],
+    include_patterns=["*.py", "*.md"],
     use_gitignore=True,
     include_tree=True,
     verbose=False
@@ -127,9 +129,13 @@ with open("context.txt", "w", encoding="utf-8") as f:
 | `target_dir`      | `str` or `Path`       | Root directory containing files to pack                          | `"."`             |
 | `custom_template` | `str`                 | Custom Jinja2 template string for rendering the output           | Built-in template |
 | `ignore_patterns` | `list[str]`           | Glob patterns for files and directories to ignore                | `None`            |
+| `include_patterns`| `list[str]`           | Glob patterns for files and directories to include               | `None`            |
 | `use_gitignore`   | `bool`                | Load ignore patterns from the root directory's `.gitignore` file | `False`           |
 | `include_tree`    | `bool`                | Include the directory structure tree in the output               | `True`            |
 | `verbose`         | `bool`                | Display warnings when files cannot be read                       | `False`           |
+
+> [!NOTE]
+> When both `include_patterns` and `ignore_patterns` are provided, ignore patterns always take precedence.
 
 #### Statistics
 
