@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
 from .params import DEFAULT_TEMPLATE
-from .utils import _load_gitignore_patterns, _should_ignore, _should_include, _is_binary_file, _build_tree_structure, _validate_inputs, _filter_ignored_directories
+from .utils import _load_gitignore_patterns, _matches_patterns, _is_binary_file, _build_tree_structure, _validate_inputs, _filter_ignored_directories
 
 
 
@@ -88,11 +88,11 @@ class Glume:
                 rel_path_str = str(rel_path).replace("\\", "/")
 
                 # Ignore patterns always take precedence over include patterns.
-                if _should_ignore(rel_path_str, self._active_ignores):
+                if _matches_patterns(rel_path_str, self._active_ignores):
                     self._ignored_paths.append(rel_path_str)
                     continue
 
-                if self._active_includes and not _should_include(rel_path_str, self._active_includes):
+                if self._active_includes and not _matches_patterns(rel_path_str, self._active_includes):
                     continue
                 
                 try:

@@ -122,26 +122,6 @@ def _matches_patterns(rel_path_str: str, patterns: Optional[List[str]]) -> bool:
     return False
 
 
-def _should_ignore(rel_path_str: str, ignore_patterns: Optional[List[str]]) -> bool:
-    """
-    Determine whether a relative path matches any ignore pattern.
-
-    :param rel_path_str: File or directory path relative to the target directory.
-    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
-    """
-    return _matches_patterns(rel_path_str, ignore_patterns)
-
-
-def _should_include(rel_path_str: str, include_patterns: Optional[List[str]]) -> bool:
-    """
-    Determine whether a relative path matches any include pattern.
-
-    :param rel_path_str: File or directory path relative to the target directory.
-    :param include_patterns: Optional list of glob patterns for files to include.
-    """
-    return _matches_patterns(rel_path_str, include_patterns)
-
-
 def _filter_ignored_directories(
     root: Path,
     directories: List[str],
@@ -162,7 +142,7 @@ def _filter_ignored_directories(
     for directory in directories:
         rel_path = (root / directory).relative_to(target_dir).as_posix()
 
-        if _should_ignore(rel_path, ignore_patterns):
+        if _matches_patterns(rel_path, ignore_patterns):
             ignored.append(rel_path)
         else:
             filtered.append(directory)
@@ -209,7 +189,7 @@ def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]])
         for entry in entries:
             rel_path = entry.relative_to(root_path)
             rel_path_str = str(rel_path).replace("\\", "/") + ("/" if entry.is_dir() else "")
-            if not _should_ignore(rel_path_str.rstrip("/"), ignore_patterns):
+            if not _matches_patterns(rel_path_str.rstrip("/"), ignore_patterns):
                 valid_entries.append(entry)
 
         count = len(valid_entries)
