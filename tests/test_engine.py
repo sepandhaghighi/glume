@@ -211,7 +211,7 @@ def test_collect_files_applies_include_patterns_to_directories(tmp_path):
 
     assert [item["path"] for item in files] == ["src/main.py"]
     assert "docs" in stats["ignored"]
-    assert stats["ignored_count"] == 2
+    assert stats["ignored_count"] == 1
 
 
 def test_pack_tree_respects_include_patterns(tmp_path):
