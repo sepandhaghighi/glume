@@ -113,10 +113,10 @@ def main():
         target_dir=dir_path,
         custom_template=template_content,
         ignore_patterns=args.ignore,
+        include_patterns=args.include,
         use_gitignore=args.git_ignore,
         include_tree=not args.no_tree,
-        verbose=args.verbose,
-        include_patterns=args.include
+        verbose=args.verbose
     )
 
     try:
