@@ -194,3 +194,49 @@ def test_pack_passes_empty_files_to_template(tmp_path):
     result = Glume(tmp_path, custom_template="count={{ files|length }}").pack()
 
     assert result == "count=0"
+
+
+def test_collect_files_applies_include_patterns_to_directories(tmp_path):
+    src = tmp_path / "src"
+    docs = tmp_path / "docs"
+    src.mkdir()
+    docs.mkdir()
+
+    (src / "main.py").write_text("python", encoding="utf-8")
+    (docs / "guide.md").write_text("markdown", encoding="utf-8")
+
+    packer = Glume(tmp_path, include_patterns=["*.py"])
+    files = packer.collect_files()
+    stats = packer.get_stats()
+
+    assert [item["path"] for item in files] == ["src/main.py"]
+    assert "docs" in stats["ignored"]
+    assert stats["ignored_count"] == 2
+
+
+def test_pack_tree_respects_include_patterns(tmp_path):
+    src = tmp_path / "src"
+    src.mkdir()
+
+    (src / "main.py").write_text("python", encoding="utf-8")
+    (src / "readme.md").write_text("markdown", encoding="utf-8")
+
+    result = Glume(tmp_path, include_patterns=["*.py"]).pack()
+
+    assert "src" in result
+    assert "main.py" in result
+    assert "readme.md" not in result
+
+
+def test_collect_files_tracks_include_excluded_files(tmp_path):
+    (tmp_path / "main.py").write_text("python", encoding="utf-8")
+    (tmp_path / "readme.md").write_text("markdown", encoding="utf-8")
+    (tmp_path / "config.json").write_text("json", encoding="utf-8")
+
+    packer = Glume(tmp_path, include_patterns=["*.py"])
+    packer.collect_files()
+    stats = packer.get_stats()
+
+    assert stats["included_count"] == 1
+    assert stats["ignored_count"] == 2
+    assert set(stats["ignored"]) == {"readme.md", "config.json"}
