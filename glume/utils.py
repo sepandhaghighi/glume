@@ -182,12 +182,13 @@ def _is_binary_file(file_path: Path) -> bool:
         return False
 
 
-def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]]) -> str:
+def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]], include_patterns: Optional[List[str]] = None) -> str:
     """
     Build a formatted directory tree while excluding ignored paths.
 
     :param root_path: Root directory from which to build the tree.
     :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+    :param include_patterns: Optional list of glob patterns for paths to include.
     """
     tree_lines = [f"{root_path.name}/"]
 
@@ -207,8 +208,13 @@ def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]])
         for entry in entries:
             rel_path = entry.relative_to(root_path)
             rel_path_str = str(rel_path).replace("\\", "/") + ("/" if entry.is_dir() else "")
-            if not _matches_patterns(rel_path_str.rstrip("/"), ignore_patterns):
-                valid_entries.append(entry)
+            if _matches_patterns(rel_path_str.rstrip("/"), ignore_patterns):
+                continue
+
+            if entry.is_file() and include_patterns and not _matches_patterns(rel_path_str.rstrip("/"), include_patterns):
+                continue
+
+            valid_entries.append(entry)
 
         count = len(valid_entries)
         for i, entry in enumerate(valid_entries):
