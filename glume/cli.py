@@ -19,7 +19,7 @@ def _print_glume_help() -> None:
 def main():
     """Run the Glume command-line interface."""
     parser = argparse.ArgumentParser(
-        description="Glume: Nano file-to-text packer for LLM context windows using Memor."
+        description="Glume: A Nano File-to-Text Packer for LLM Context Windows"
     )
     parser.add_argument(
         "--version",
