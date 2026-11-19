@@ -9,6 +9,7 @@ from pathlib import Path
 from .params import GLUME_VERSION, GLUME_REPO, OVERVIEW
 from .engine import Glume
 
+
 def _print_glume_help() -> None:
     """Print Glume details."""
     type_print(text2art("Glume"), mode=TypeMode.LINE, delay=0.1)
@@ -16,10 +17,11 @@ def _print_glume_help() -> None:
     type_print(OVERVIEW, mode=TypeMode.CHAR, delay=0.05)
     type_print(f"Repo : {GLUME_REPO}", mode=TypeMode.CHAR, delay=0.05)
 
+
 def main():
     """Run the Glume command-line interface."""
     parser = argparse.ArgumentParser(
-        description="Glume: Nano file-to-text packer for LLM context windows using Memor."
+        description="Glume: A Nano File-to-Text Packer for LLM Context Windows"
     )
     parser.add_argument(
         "--version",

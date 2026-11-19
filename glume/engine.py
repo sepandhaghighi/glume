@@ -7,8 +7,8 @@ from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
 from .params import DEFAULT_TEMPLATE
-from .utils import _load_gitignore_patterns, _matches_patterns, _is_binary_file, _build_tree_structure, _validate_inputs, _filter_ignored_directories
-
+from .utils import _load_gitignore_patterns, _matches_patterns, _is_binary_file
+from .utils import _build_tree_structure, _validate_inputs, _filter_ignored_directories
 
 
 class Glume:
@@ -95,7 +95,7 @@ class Glume:
                 if self._active_includes and not _matches_patterns(rel_path_str, self._active_includes):
                     self._ignored_paths.append(rel_path_str)
                     continue
-                
+
                 try:
                     if _is_binary_file(full_path):
                         self._binary_files.append(rel_path_str)
@@ -133,7 +133,10 @@ class Glume:
     def pack(self) -> str:
         """Pack directory contents into a formatted text."""
         files = self.collect_files()
-        tree_str = _build_tree_structure(self._target_dir, self._active_ignores, self._active_includes) if self._include_tree else ""
+        tree_str = _build_tree_structure(
+            self._target_dir,
+            self._active_ignores,
+            self._active_includes) if self._include_tree else ""
 
         prompt_template = PromptTemplate(
             engine=TemplateEngine.JINJA,

@@ -61,7 +61,7 @@ def _validate_inputs(
         for index, pattern in enumerate(ignore_patterns):
             if not isinstance(pattern, str) or not pattern.strip():
                 raise GlumeValidationError(IGNORE_PATTERN_TYPE_ERROR.format(index=index))
-    
+
     if include_patterns is not None:
         if not isinstance(include_patterns, list):
             raise GlumeValidationError(INCLUDE_PATTERNS_TYPE_ERROR)
@@ -95,7 +95,6 @@ def _load_gitignore_patterns(root_path: Path) -> List[str]:
                 for line in f:
                     cleaned = line.strip()
                     if cleaned and not cleaned.startswith("#"):
-                        # Normalize leading/trailing slashes for glob matching
                         patterns.append(cleaned.lstrip("/"))
         except Exception:
             pass
@@ -114,7 +113,6 @@ def _matches_patterns(rel_path_str: str, patterns: Optional[List[str]]) -> bool:
 
     path_obj = Path(rel_path_str)
     for pattern in patterns:
-        # Match against full relative path, file name, or directory components
         if fnmatch.fnmatch(rel_path_str, pattern) or fnmatch.fnmatch(path_obj.name, pattern):
             return True
         if any(fnmatch.fnmatch(part, pattern.rstrip("/")) for part in path_obj.parts):
@@ -182,7 +180,9 @@ def _is_binary_file(file_path: Path) -> bool:
         return False
 
 
-def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]], include_patterns: Optional[List[str]]) -> str:
+def _build_tree_structure(root_path: Path,
+                          ignore_patterns: Optional[List[str]],
+                          include_patterns: Optional[List[str]]) -> str:
     """
     Build a formatted directory tree while excluding ignored paths.
 
