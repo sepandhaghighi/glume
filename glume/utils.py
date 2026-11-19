@@ -188,7 +188,7 @@ def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]],
 
     :param root_path: Root directory from which to build the tree.
     :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
-    :param include_patterns: Optional list of glob patterns for paths to include.
+    :param include_patterns: Optional list of glob patterns for files and directories to include.
     """
     tree_lines = [f"{root_path.name}/"]
 
