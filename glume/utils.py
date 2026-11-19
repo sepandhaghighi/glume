@@ -127,6 +127,7 @@ def _filter_ignored_directories(
     directories: List[str],
     target_dir: Path,
     ignore_patterns: Optional[List[str]],
+    include_patterns: Optional[List[str]],
 ) -> tuple:
     """
     Filter ignored directories and return their names.
@@ -135,17 +136,34 @@ def _filter_ignored_directories(
     :param directories: List of directory names to filter.
     :param target_dir: Root directory containing files to pack.
     :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+    :param include_patterns: Optional list of glob patterns for files and directories to include.
     """
     ignored = []
     filtered = []
 
     for directory in directories:
-        rel_path = (root / directory).relative_to(target_dir).as_posix()
+        dir_path = root / directory
+        rel_path = dir_path.relative_to(target_dir).as_posix()
 
         if _matches_patterns(rel_path, ignore_patterns):
             ignored.append(rel_path)
-        else:
-            filtered.append(directory)
+            continue
+
+        if include_patterns:
+            has_included_files = any(
+                _matches_patterns(
+                    (Path(current_root) / file).relative_to(target_dir).as_posix(),
+                    include_patterns
+                )
+                for current_root, _, files in os.walk(dir_path)
+                for file in files
+            )
+
+            if not has_included_files:
+                ignored.append(rel_path)
+                continue
+
+        filtered.append(directory)
 
     return filtered, ignored
 
@@ -164,12 +182,13 @@ def _is_binary_file(file_path: Path) -> bool:
         return False
 
 
-def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]]) -> str:
+def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]], include_patterns: Optional[List[str]]) -> str:
     """
     Build a formatted directory tree while excluding ignored paths.
 
     :param root_path: Root directory from which to build the tree.
     :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+    :param include_patterns: Optional list of glob patterns for files and directories to include.
     """
     tree_lines = [f"{root_path.name}/"]
 
@@ -189,8 +208,13 @@ def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]])
         for entry in entries:
             rel_path = entry.relative_to(root_path)
             rel_path_str = str(rel_path).replace("\\", "/") + ("/" if entry.is_dir() else "")
-            if not _matches_patterns(rel_path_str.rstrip("/"), ignore_patterns):
-                valid_entries.append(entry)
+            if _matches_patterns(rel_path_str.rstrip("/"), ignore_patterns):
+                continue
+
+            if entry.is_file() and include_patterns and not _matches_patterns(rel_path_str.rstrip("/"), include_patterns):
+                continue
+
+            valid_entries.append(entry)
 
         count = len(valid_entries)
         for i, entry in enumerate(valid_entries):
