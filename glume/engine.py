@@ -7,7 +7,8 @@ from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
 from .params import DEFAULT_TEMPLATE
-from .utils import _load_gitignore_patterns, _matches_patterns, _is_binary_file, _build_tree_structure, _validate_inputs, _filter_ignored_directories
+from .utils import _load_gitignore_patterns, _matches_patterns, _is_binary_file
+from .utils import _build_tree_structure, _validate_inputs, _filter_ignored_directories
 
 
 
