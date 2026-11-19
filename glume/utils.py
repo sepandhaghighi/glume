@@ -127,16 +127,16 @@ def _filter_ignored_directories(
     directories: List[str],
     target_dir: Path,
     ignore_patterns: Optional[List[str]],
-    include_patterns: Optional[List[str]] = None,
+    include_patterns: Optional[List[str]],
 ) -> tuple:
     """
-    Filter ignored and non-included directories.
+    Filter ignored directories and return their names.
 
     :param root: Current directory being traversed.
     :param directories: List of directory names to filter.
     :param target_dir: Root directory containing files to pack.
-    :param ignore_patterns: Optional list of patterns for paths to ignore.
-    :param include_patterns: Optional list of patterns for paths to include.
+    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+    :param include_patterns: Optional list of glob patterns for files and directories to include.
     """
     ignored = []
     filtered = []
@@ -182,7 +182,7 @@ def _is_binary_file(file_path: Path) -> bool:
         return False
 
 
-def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]], include_patterns: Optional[List[str]] = None) -> str:
+def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]], include_patterns: Optional[List[str]]) -> str:
     """
     Build a formatted directory tree while excluding ignored paths.
 
