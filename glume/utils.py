@@ -95,7 +95,6 @@ def _load_gitignore_patterns(root_path: Path) -> List[str]:
                 for line in f:
                     cleaned = line.strip()
                     if cleaned and not cleaned.startswith("#"):
-                        # Normalize leading/trailing slashes for glob matching
                         patterns.append(cleaned.lstrip("/"))
         except Exception:
             pass
@@ -114,7 +113,6 @@ def _matches_patterns(rel_path_str: str, patterns: Optional[List[str]]) -> bool:
 
     path_obj = Path(rel_path_str)
     for pattern in patterns:
-        # Match against full relative path, file name, or directory components
         if fnmatch.fnmatch(rel_path_str, pattern) or fnmatch.fnmatch(path_obj.name, pattern):
             return True
         if any(fnmatch.fnmatch(part, pattern.rstrip("/")) for part in path_obj.parts):
