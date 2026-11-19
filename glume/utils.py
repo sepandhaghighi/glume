@@ -61,7 +61,7 @@ def _validate_inputs(
         for index, pattern in enumerate(ignore_patterns):
             if not isinstance(pattern, str) or not pattern.strip():
                 raise GlumeValidationError(IGNORE_PATTERN_TYPE_ERROR.format(index=index))
-    
+
     if include_patterns is not None:
         if not isinstance(include_patterns, list):
             raise GlumeValidationError(INCLUDE_PATTERNS_TYPE_ERROR)
@@ -180,7 +180,9 @@ def _is_binary_file(file_path: Path) -> bool:
         return False
 
 
-def _build_tree_structure(root_path: Path, ignore_patterns: Optional[List[str]], include_patterns: Optional[List[str]]) -> str:
+def _build_tree_structure(root_path: Path,
+                          ignore_patterns: Optional[List[str]],
+                          include_patterns: Optional[List[str]]) -> str:
     """
     Build a formatted directory tree while excluding ignored paths.
 

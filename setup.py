@@ -15,7 +15,7 @@ def read_description() -> str:
         return description
     except Exception:
         return '''Glume is a lightweight Python tool for packing project files into a structured text representation
-        optimized for LLM context windows. It collects readable files from a target directory and combines 
+        optimized for LLM context windows. It collects readable files from a target directory and combines
         their contents into a single formatted output, optionally including the directory structure tree.
         Glume supports customizable Jinja2 templates, glob-based include and ignore patterns, automatic .gitignore integration,
         and file processing statistics. It can be used both as a CLI tool and as an importable Python library.
@@ -36,9 +36,11 @@ setup(
     download_url='https://github.com/sepandhaghighi/glume/tarball/v0.1',
     keywords='glume python llm large-language-models llm-context context-window prompt-engineering prompt-management code-context memor jinja2 cli developer-tools',
     project_urls={
-        'Source': 'https://github.com/sepandhaghighi/glume'
-    },
-    install_requires=['memor>=1.4', 'art>=1.8', 'typio>=0.4'],
+        'Source': 'https://github.com/sepandhaghighi/glume'},
+    install_requires=[
+        'memor>=1.4',
+        'art>=1.8',
+        'typio>=0.4'],
     python_requires='>=3.8',
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -64,8 +66,6 @@ setup(
     ],
     license='MIT',
     entry_points={
-            'console_scripts': [
-                'glume = glume.cli:main',
-            ]
-    }
-)
+        'console_scripts': [
+            'glume = glume.cli:main',
+        ]})
