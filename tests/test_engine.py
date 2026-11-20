@@ -228,6 +228,28 @@ def test_pack_tree_respects_include_patterns(tmp_path):
     assert "readme.md" not in result
 
 
+def test_pack_tree_excludes_directories_without_included_files(tmp_path):
+    src = tmp_path / "src"
+    git = tmp_path / ".git"
+    docs = tmp_path / "docs"
+
+    src.mkdir()
+    git.mkdir()
+    docs.mkdir()
+
+    (src / "main.js").write_text("javascript", encoding="utf-8")
+    (git / "config").write_text("git config", encoding="utf-8")
+    (docs / "guide.md").write_text("markdown", encoding="utf-8")
+
+    result = Glume(tmp_path, include_patterns=["*.js"]).pack()
+
+    assert "src" in result
+    assert "main.js" in result
+    assert ".git" not in result
+    assert "docs" not in result
+    assert "guide.md" not in result
+
+
 def test_collect_files_tracks_include_excluded_files(tmp_path):
     (tmp_path / "main.py").write_text("python", encoding="utf-8")
     (tmp_path / "readme.md").write_text("markdown", encoding="utf-8")

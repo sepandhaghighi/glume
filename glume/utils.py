@@ -211,8 +211,22 @@ def _build_tree_structure(root_path: Path,
             if _matches_patterns(rel_path_str.rstrip("/"), ignore_patterns):
                 continue
 
-            if entry.is_file() and include_patterns and not _matches_patterns(rel_path_str.rstrip("/"), include_patterns):
-                continue
+            if include_patterns:
+                if entry.is_file() and not _matches_patterns(rel_path_str.rstrip("/"), include_patterns):
+                    continue
+
+                if entry.is_dir():
+                    has_included_files = any(
+                        _matches_patterns(
+                            (Path(current_root) / file).relative_to(root_path).as_posix(),
+                            include_patterns
+                        )
+                        for current_root, _, files in os.walk(entry)
+                        for file in files
+                    )
+
+                    if not has_included_files:
+                        continue
 
             valid_entries.append(entry)
 
