@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """glume params."""
 
-GLUME_VERSION = "0.1"
+GLUME_VERSION = "0.2"
 
 GLUME_REPO = "https://github.com/sepandhaghighi/glume"
 
