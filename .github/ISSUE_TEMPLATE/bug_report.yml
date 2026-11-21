@@ -85,6 +85,7 @@ body:
       label: Glume version
       description: Which version of Glume are you using?
       options:
+        - Glume 0.2
         - Glume 0.1
       default: 0
     validations:
