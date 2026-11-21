@@ -25,7 +25,7 @@ def read_description() -> str:
 setup(
     name='glume',
     packages=['glume'],
-    version='0.1',
+    version='0.2',
     description='Glume: A Nano File-to-Text Packer for LLM Context Windows',
     long_description=read_description(),
     long_description_content_type='text/markdown',
@@ -33,7 +33,7 @@ setup(
     author='Sepand Haghighi',
     author_email='me@sepand.tech',
     url='https://github.com/sepandhaghighi/glume',
-    download_url='https://github.com/sepandhaghighi/glume/tarball/v0.1',
+    download_url='https://github.com/sepandhaghighi/glume/tarball/v0.2',
     keywords='glume python llm large-language-models llm-context context-window prompt-engineering prompt-management code-context memor jinja2 cli developer-tools',
     project_urls={
         'Source': 'https://github.com/sepandhaghighi/glume'},
