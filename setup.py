@@ -39,6 +39,7 @@ setup(
         'Source': 'https://github.com/sepandhaghighi/glume'},
     install_requires=[
         'memor>=1.4',
+        'tomli>=2.0.2',
         'art>=1.8',
         'typio>=0.4'],
     python_requires='>=3.8',
