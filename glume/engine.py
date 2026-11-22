@@ -164,8 +164,18 @@ class Glume:
         verbose: Optional[bool] = None,
         auto_discover: bool = False,
     ):
-        """Create a Glume instance from a config file or dictionary."""
-
+        """
+        Create a Glume instance from a config file or dictionary.
+        
+        :param config: Glume config.
+        :param target_dir: Root directory containing files to pack.
+        :param custom_template: Optional Jinja2 template string for rendering the output.
+        :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+        :param include_patterns: Optional list of glob patterns for files and directories to include.
+        :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
+        :param include_tree: If True, includes the directory tree in the output.
+        :param verbose: If True, prints warnings when files cannot be read.
+        """
         init_directory = target_dir if target_dir is not None else "."
         loaded_config = _load_config(init_directory, config, auto_discover=auto_discover)
 
@@ -175,32 +185,18 @@ class Glume:
         resolved_include_patterns = list(loaded_config.get("include_patterns", []))
         resolved_include_patterns.extend(include_patterns or [])
 
+        resolved_target_dir = target_dir if target_dir is not None else loaded_config.get("target_dir", ".")
+        resolved_custom_template = custom_template if custom_template is not None else loaded_config.get("custom_template")
+        resolved_use_gitignore = use_gitignore if use_gitignore is not None else loaded_config.get("use_gitignore", False)
+        resolved_include_tree = include_tree if include_tree is not None else loaded_config.get("include_tree", True)
+        resolved_verbose = verbose if verbose is not None else loaded_config.get("verbose", False)
+
         return cls(
-            target_dir=(
-                target_dir
-                if target_dir is not None
-                else loaded_config.get("target_dir", ".")
-            ),
-            custom_template=(
-                custom_template
-                if custom_template is not None
-                else loaded_config.get("custom_template")
-            ),
+            target_dir=resolved_target_dir,
+            custom_template=resolved_custom_template,
             ignore_patterns=resolved_ignore_patterns or None,
             include_patterns=resolved_include_patterns or None,
-            use_gitignore=(
-                use_gitignore
-                if use_gitignore is not None
-                else loaded_config.get("use_gitignore", False)
-            ),
-            include_tree=(
-                include_tree
-                if include_tree is not None
-                else loaded_config.get("include_tree", True)
-            ),
-            verbose=(
-                verbose
-                if verbose is not None
-                else loaded_config.get("verbose", False)
-            ),
+            use_gitignore=resolved_use_gitignore,
+            include_tree=resolved_include_tree,
+            verbose=resolved_verbose,
         )
