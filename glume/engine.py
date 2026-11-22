@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
 from .params import DEFAULT_TEMPLATE
-from .utils import _load_gitignore_patterns, _matches_patterns, _is_binary_file
+from .utils import _load_gitignore_patterns, _matches_patterns, _is_binary_file, _load_config
 from .utils import _build_tree_structure, _validate_inputs, _filter_ignored_directories
 
 
@@ -150,3 +150,57 @@ class Glume:
 
         prompt = Prompt(template=prompt_template)
         return prompt.render()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: Optional[Union[str, Path, dict]] = None,
+        target_dir: Optional[Union[str, Path]] = None,
+        custom_template: Optional[str] = None,
+        ignore_patterns: Optional[List[str]] = None,
+        include_patterns: Optional[List[str]] = None,
+        use_gitignore: Optional[bool] = None,
+        include_tree: Optional[bool] = None,
+        verbose: Optional[bool] = None,
+        auto_discover: bool = False,
+    ):
+        """Create a Glume instance from a config file or dictionary."""
+
+        init_directory = target_dir if target_dir is not None else "."
+        loaded_config = _load_config(init_directory, config, auto_discover=auto_discover)
+
+        resolved_ignore_patterns = list(loaded_config.get("ignore_patterns", []))
+        resolved_ignore_patterns.extend(ignore_patterns or [])
+
+        resolved_include_patterns = list(loaded_config.get("include_patterns", []))
+        resolved_include_patterns.extend(include_patterns or [])
+
+        return cls(
+            target_dir=(
+                target_dir
+                if target_dir is not None
+                else loaded_config.get("target_dir", ".")
+            ),
+            custom_template=(
+                custom_template
+                if custom_template is not None
+                else loaded_config.get("custom_template")
+            ),
+            ignore_patterns=resolved_ignore_patterns or None,
+            include_patterns=resolved_include_patterns or None,
+            use_gitignore=(
+                use_gitignore
+                if use_gitignore is not None
+                else loaded_config.get("use_gitignore", False)
+            ),
+            include_tree=(
+                include_tree
+                if include_tree is not None
+                else loaded_config.get("include_tree", True)
+            ),
+            verbose=(
+                verbose
+                if verbose is not None
+                else loaded_config.get("verbose", False)
+            ),
+        )
