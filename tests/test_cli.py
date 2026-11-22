@@ -15,22 +15,35 @@ def run_cli(monkeypatch, args):
 def test_cli_default_arguments(monkeypatch, tmp_path):
     captured = {}
 
-    def fake_init(self, **kwargs):
+    def fake_from_config(**kwargs):
         captured.update(kwargs)
+
+        packer = MagicMock()
+        packer.pack.return_value = "packed"
+        packer.get_stats.return_value = {
+            "included_count": 0,
+            "ignored_count": 0,
+            "binary_count": 0,
+            "failed_count": 0,
+            "ignored": [],
+            "binary": [],
+            "failed": [],
+        }
+        return packer
 
     def fake_pack(self):
         return "packed output"
 
-    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", fake_pack):
+    with patch("glume.cli.Glume.from_config", fake_from_config), patch("glume.cli.Glume.pack", fake_pack):
         run_cli(monkeypatch, [str(tmp_path)])
 
     assert captured["target_dir"] == tmp_path.resolve()
     assert captured["custom_template"] is None
     assert captured["ignore_patterns"] is None
     assert captured["include_patterns"] is None
-    assert captured["use_gitignore"] is False
-    assert captured["include_tree"] is True
-    assert captured["verbose"] is False
+    assert captured["use_gitignore"] is None
+    assert captured["include_tree"] is None
+    assert captured["verbose"] is None
 
 
 def test_cli_wizard_mode_prints_to_stderr(monkeypatch, tmp_path, capsys):
@@ -98,10 +111,23 @@ def test_cli_custom_template_and_flags(monkeypatch, tmp_path):
     template.write_text("{{ files|length }}", encoding="utf-8")
     captured = {}
 
-    def fake_init(self, **kwargs):
+    def fake_from_config(**kwargs):
         captured.update(kwargs)
 
-    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="ok"):
+        packer = MagicMock()
+        packer.pack.return_value = "packed"
+        packer.get_stats.return_value = {
+            "included_count": 0,
+            "ignored_count": 0,
+            "binary_count": 0,
+            "failed_count": 0,
+            "ignored": [],
+            "binary": [],
+            "failed": [],
+        }
+        return packer
+
+    with patch("glume.cli.Glume.from_config", fake_from_config), patch("glume.cli.Glume.pack", return_value="ok"):
         run_cli(
             monkeypatch,
             [
@@ -198,10 +224,23 @@ def test_cli_adds_output_file_to_ignore_patterns(monkeypatch, tmp_path):
     output = source / "context.txt"
     captured = {}
 
-    def fake_init(self, **kwargs):
+    def fake_from_config(**kwargs):
         captured.update(kwargs)
 
-    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="packed"):
+        packer = MagicMock()
+        packer.pack.return_value = "packed"
+        packer.get_stats.return_value = {
+            "included_count": 0,
+            "ignored_count": 0,
+            "binary_count": 0,
+            "failed_count": 0,
+            "ignored": [],
+            "binary": [],
+            "failed": [],
+        }
+        return packer
+
+    with patch("glume.cli.Glume.from_config", fake_from_config), patch("glume.cli.Glume.pack", return_value="packed"):
         run_cli(monkeypatch, [str(source), "--output", str(output)])
 
     assert captured["ignore_patterns"] == ["context.txt"]
@@ -213,10 +252,23 @@ def test_cli_does_not_add_external_output_to_ignore_patterns(monkeypatch, tmp_pa
     output = tmp_path / "context.txt"
     captured = {}
 
-    def fake_init(self, **kwargs):
+    def fake_from_config(**kwargs):
         captured.update(kwargs)
 
-    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="packed"):
+        packer = MagicMock()
+        packer.pack.return_value = "packed"
+        packer.get_stats.return_value = {
+            "included_count": 0,
+            "ignored_count": 0,
+            "binary_count": 0,
+            "failed_count": 0,
+            "ignored": [],
+            "binary": [],
+            "failed": [],
+        }
+        return packer
+
+    with patch("glume.cli.Glume.from_config", fake_from_config), patch("glume.cli.Glume.pack", return_value="packed"):
         run_cli(monkeypatch, [str(source), "--output", str(output)])
 
     assert captured["ignore_patterns"] is None
@@ -227,10 +279,23 @@ def test_cli_optional_directory_argument(monkeypatch, tmp_path):
     source.mkdir()
     captured = {}
 
-    def fake_init(self, **kwargs):
+    def fake_from_config(**kwargs):
         captured.update(kwargs)
 
-    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="packed"):
+        packer = MagicMock()
+        packer.pack.return_value = "packed"
+        packer.get_stats.return_value = {
+            "included_count": 0,
+            "ignored_count": 0,
+            "binary_count": 0,
+            "failed_count": 0,
+            "ignored": [],
+            "binary": [],
+            "failed": [],
+        }
+        return packer
+
+    with patch("glume.cli.Glume.from_config", fake_from_config), patch("glume.cli.Glume.pack", return_value="packed"):
         run_cli(monkeypatch, ["--directory", str(source)])
 
     assert captured["target_dir"] == source.resolve()
@@ -244,10 +309,23 @@ def test_cli_optional_directory_overrides_positional(monkeypatch, tmp_path):
 
     captured = {}
 
-    def fake_init(self, **kwargs):
+    def fake_from_config(**kwargs):
         captured.update(kwargs)
 
-    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="packed"):
+        packer = MagicMock()
+        packer.pack.return_value = "packed"
+        packer.get_stats.return_value = {
+            "included_count": 0,
+            "ignored_count": 0,
+            "binary_count": 0,
+            "failed_count": 0,
+            "ignored": [],
+            "binary": [],
+            "failed": [],
+        }
+        return packer
+
+    with patch("glume.cli.Glume.from_config", fake_from_config), patch("glume.cli.Glume.pack", return_value="packed"):
         run_cli(
             monkeypatch,
             [
@@ -265,10 +343,23 @@ def test_cli_positional_directory_still_works(monkeypatch, tmp_path):
     source.mkdir()
     captured = {}
 
-    def fake_init(self, **kwargs):
+    def fake_from_config(**kwargs):
         captured.update(kwargs)
 
-    with patch("glume.cli.Glume.__init__", fake_init), patch("glume.cli.Glume.pack", return_value="packed"):
+        packer = MagicMock()
+        packer.pack.return_value = "packed"
+        packer.get_stats.return_value = {
+            "included_count": 0,
+            "ignored_count": 0,
+            "binary_count": 0,
+            "failed_count": 0,
+            "ignored": [],
+            "binary": [],
+            "failed": [],
+        }
+        return packer
+
+    with patch("glume.cli.Glume.from_config", fake_from_config), patch("glume.cli.Glume.pack", return_value="packed"):
         run_cli(monkeypatch, [str(source)])
 
     assert captured["target_dir"] == source.resolve()
