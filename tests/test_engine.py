@@ -262,3 +262,62 @@ def test_collect_files_tracks_include_excluded_files(tmp_path):
     assert stats["included_count"] == 1
     assert stats["ignored_count"] == 2
     assert set(stats["ignored"]) == {"readme.md", "config.json"}
+
+
+def test_from_config_merges_ignore_patterns(tmp_path):
+    packer = Glume.from_config(
+        config={
+            "ignore_patterns": ["*.log", "__pycache__"],
+        },
+        target_dir=tmp_path,
+        ignore_patterns=["*.tmp"],
+    )
+
+    assert packer._active_ignores == [
+        "*.log",
+        "__pycache__",
+        "*.tmp",
+    ]
+
+
+def test_from_config_merges_include_patterns(tmp_path):
+    packer = Glume.from_config(
+        config={
+            "include_patterns": ["*.py", "*.md"],
+        },
+        target_dir=tmp_path,
+        include_patterns=["*.json"],
+    )
+
+    assert packer._active_includes == [
+        "*.py",
+        "*.md",
+        "*.json",
+    ]
+
+
+def test_from_config_uses_config_patterns_when_no_overrides(tmp_path):
+    packer = Glume.from_config(
+        config={
+            "ignore_patterns": ["*.log"],
+            "include_patterns": ["*.py"],
+        },
+        target_dir=tmp_path,
+    )
+
+    assert packer._active_ignores == ["*.log"]
+    assert packer._active_includes == ["*.py"]
+
+
+def test_from_config_loads_glume_file(tmp_path):
+    config_file = tmp_path / ".glume"
+    config_file.write_text(
+        'ignore_patterns = ["*.log"]\n'
+        'include_patterns = ["*.py"]\n',
+        encoding="utf-8",
+    )
+
+    packer = Glume.from_config(target_dir=tmp_path, auto_discover=True)
+
+    assert packer._active_ignores == ["*.log"]
+    assert packer._active_includes == ["*.py"]

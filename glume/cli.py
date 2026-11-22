@@ -34,14 +34,19 @@ def main():
         help="Display Glume info"
     )
     parser.add_argument(
+        "-c", "--config",
+        help="Path to a Glume config file"
+    )
+    parser.add_argument(
         "directory",
         nargs="?",
-        default=".",
+        default=None,
         help="Target directory to pack (default: current directory)"
     )
     parser.add_argument(
         "--directory",
         dest="directory_optional",
+        default=None,
         help="Target directory to pack (overrides positional directory)"
     )
     parser.add_argument(
@@ -55,6 +60,7 @@ def main():
     parser.add_argument(
         "--no-tree",
         action="store_true",
+        default=None,
         help="Disable folder structure tree inclusion"
     )
     parser.add_argument(
@@ -72,11 +78,13 @@ def main():
     parser.add_argument(
         "--git-ignore",
         action="store_true",
+        default=None,
         help="Automatically load and apply rules from the project's .gitignore file"
     )
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
+        default=None,
         help="Enable verbose warnings for unreadable files"
     )
     parser.add_argument(
@@ -89,8 +97,11 @@ def main():
     if args.info:
         _print_glume_help()
         return
+    
     directory = args.directory_optional if args.directory_optional is not None else args.directory
-    dir_path = Path(directory).resolve()
+
+    dir_path = Path(directory).resolve() if directory else Path.cwd().resolve()
+
     if args.output:
         output_path = Path(args.output).resolve()
         try:
@@ -111,14 +122,15 @@ def main():
             print(f"Error reading template file: {e}", file=sys.stderr)
             sys.exit(1)
 
-    packer = Glume(
-        target_dir=dir_path,
+    packer = Glume.from_config(
+        config=args.config,
+        target_dir=Path(directory).resolve() if directory else None,
         custom_template=template_content,
         ignore_patterns=args.ignore,
         include_patterns=args.include,
         use_gitignore=args.git_ignore,
-        include_tree=not args.no_tree,
-        verbose=args.verbose
+        include_tree=not args.no_tree if args.no_tree is not None else None,
+        verbose=args.verbose,
     )
 
     try:

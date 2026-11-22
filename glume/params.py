@@ -22,6 +22,10 @@ IGNORE_PATTERN_TYPE_ERROR = "ignore_patterns[{index}] must be a non-empty string
 INCLUDE_PATTERNS_TYPE_ERROR = "include_patterns must be a list of non-empty strings or None."
 INCLUDE_PATTERN_TYPE_ERROR = "include_patterns[{index}] must be a non-empty string."
 
+INVALID_CONFIG_TYPE_ERROR = "config must be str, pathlib.Path, or dict."
+INVALID_CONFIG_FILE_ERROR = "Failed to load config file: {error}"
+INVALID_CONFIG_FORMAT_ERROR = "Config file content must be a valid TOML format."
+
 BOOLEAN_ARGUMENT_TYPE_ERROR = "{name} must be a boolean."
 
 DEFAULT_TEMPLATE = """

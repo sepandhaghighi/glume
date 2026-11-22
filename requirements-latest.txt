@@ -1,3 +1,4 @@
 memor==1.4
+tomli==2.5.0
 art==6.5
 typio==1.4
