@@ -4,7 +4,7 @@
 import os
 import fnmatch
 from pathlib import Path
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Union
 import tomli
 from .errors import GlumeValidationError
 from .params import (

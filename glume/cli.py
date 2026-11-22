@@ -84,6 +84,7 @@ def main():
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
+        default=None,
         help="Enable verbose warnings for unreadable files"
     )
     parser.add_argument(
@@ -130,7 +131,7 @@ def main():
 
     packer = Glume.from_config(
         config=args.config,
-        target_dir=directory,
+        target_dir=Path(directory).resolve() if directory else None,
         custom_template=template_content,
         ignore_patterns=args.ignore,
         include_patterns=args.include,

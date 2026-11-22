@@ -317,7 +317,7 @@ def test_from_config_loads_glume_file(tmp_path):
         encoding="utf-8",
     )
 
-    packer = Glume.from_config(target_dir=tmp_path)
+    packer = Glume.from_config(target_dir=tmp_path, auto_discover=True)
 
     assert packer._active_ignores == ["*.log"]
     assert packer._active_includes == ["*.py"]
