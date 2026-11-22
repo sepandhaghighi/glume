@@ -51,13 +51,13 @@ Glume supports customizable Jinja2 templates, glob-based include and ignore patt
 ## Installation		
 
 ### Source Code
-- Download [Version 0.1](https://github.com/sepandhaghighi/glume/archive/v0.1.zip) or [Latest Source](https://github.com/sepandhaghighi/glume/archive/dev.zip)
+- Download [Version 0.2](https://github.com/sepandhaghighi/glume/archive/v0.2.zip) or [Latest Source](https://github.com/sepandhaghighi/glume/archive/dev.zip)
 - `pip install .`				
 
 ### PyPI
 
 - Check [Python Packaging User Guide](https://packaging.python.org/installing/)     
-- `pip install glume==0.1`						
+- `pip install glume==0.2`						
 
 
 ## Usage
