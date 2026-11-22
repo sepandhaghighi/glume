@@ -5,6 +5,7 @@ import os
 import fnmatch
 from pathlib import Path
 from typing import List, Optional, Any
+import tomli
 from .errors import GlumeValidationError
 from .params import (
     TARGET_DIR_TYPE_ERROR,
@@ -16,7 +17,51 @@ from .params import (
     INCLUDE_PATTERNS_TYPE_ERROR,
     INCLUDE_PATTERN_TYPE_ERROR,
     BOOLEAN_ARGUMENT_TYPE_ERROR,
+    INVALID_CONFIG_TYPE_ERROR,
+    INVALID_CONFIG_FILE_ERROR,
+    INVALID_CONFIG_FORMAT_ERROR,
 )
+
+
+def _load_config(
+    directory: Union[str, Path],
+    config_source: Optional[Union[str, Path, dict]] = None,
+    auto_discover: bool = False,
+) -> dict:
+    """Load config."""
+    if config_source is None:
+        if not auto_discover:
+            return {}
+
+        dir_path = Path(directory)
+        candidate = dir_path / ".glume"
+
+        if candidate.is_file():
+            config_path = candidate
+        else:
+            return {}
+    elif isinstance(config_source, dict):
+        return config_source
+    elif isinstance(config_source, (str, Path)):
+        config_path = Path(config_source)
+    else:
+        raise GlumeValidationError(INVALID_CONFIG_TYPE_ERROR)
+
+    if not config_path.exists():
+        return {}
+
+    try:
+        with open(config_path, "rb") as f:
+            data = tomli.load(f)
+
+        if not isinstance(data, dict):
+            raise GlumeValidationError(INVALID_CONFIG_FORMAT_ERROR)
+
+        return data
+    except Exception as e:
+        if isinstance(e, GlumeValidationError):
+            raise e
+        raise GlumeValidationError(INVALID_CONFIG_FILE_ERROR.format(error=e))
 
 
 def _validate_inputs(
