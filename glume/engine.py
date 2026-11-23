@@ -150,6 +150,34 @@ class Glume:
 
         prompt = Prompt(template=prompt_template)
         return prompt.render()
+    
+    def save(self, output_path: Union[str, Path]) -> Path:
+        """
+        Pack directory contents and save them to a file.
+        
+        :param output_path: Output path.
+        """
+        output_path = Path(output_path).resolve()
+        original_ignores = self._active_ignores
+
+        try:
+            try:
+                relative_output = output_path.relative_to(self._target_dir)
+                self._active_ignores = list(original_ignores or [])
+                if relative_output.as_posix() not in self._active_ignores:
+                    self._active_ignores.append(relative_output.as_posix())
+            except ValueError:
+                pass
+
+            result = self.pack()
+
+            with open(output_path, "w", encoding="utf-8") as f:
+                f.write(result)
+
+        finally:
+            self._active_ignores = original_ignores
+
+        return output_path
 
     @classmethod
     def from_config(
