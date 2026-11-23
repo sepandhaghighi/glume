@@ -218,60 +218,30 @@ def test_cli_invalid_arguments_show_argparse_error(monkeypatch):
     assert exc.value.code == 2
 
 
-def test_cli_adds_output_file_to_ignore_patterns(monkeypatch, tmp_path):
+def test_cli_saves_output_using_glume_save(monkeypatch, tmp_path):
     source = tmp_path / "source"
     source.mkdir()
     output = source / "context.txt"
-    captured = {}
+    packer = MagicMock()
 
-    def fake_from_config(**kwargs):
-        captured.update(kwargs)
-
-        packer = MagicMock()
-        packer.pack.return_value = "packed"
-        packer.get_stats.return_value = {
-            "included_count": 0,
-            "ignored_count": 0,
-            "binary_count": 0,
-            "failed_count": 0,
-            "ignored": [],
-            "binary": [],
-            "failed": [],
-        }
-        return packer
-
-    with patch("glume.cli.Glume.from_config", fake_from_config), patch("glume.cli.Glume.pack", return_value="packed"):
+    with patch("glume.cli.Glume.from_config", return_value=packer):
         run_cli(monkeypatch, [str(source), "--output", str(output)])
 
-    assert captured["ignore_patterns"] == ["context.txt"]
+    packer.save.assert_called_once_with(str(output))
+    packer.pack.assert_not_called()
 
 
-def test_cli_does_not_add_external_output_to_ignore_patterns(monkeypatch, tmp_path):
+def test_cli_saves_external_output_using_glume_save(monkeypatch, tmp_path):
     source = tmp_path / "source"
     source.mkdir()
     output = tmp_path / "context.txt"
-    captured = {}
+    packer = MagicMock()
 
-    def fake_from_config(**kwargs):
-        captured.update(kwargs)
-
-        packer = MagicMock()
-        packer.pack.return_value = "packed"
-        packer.get_stats.return_value = {
-            "included_count": 0,
-            "ignored_count": 0,
-            "binary_count": 0,
-            "failed_count": 0,
-            "ignored": [],
-            "binary": [],
-            "failed": [],
-        }
-        return packer
-
-    with patch("glume.cli.Glume.from_config", fake_from_config), patch("glume.cli.Glume.pack", return_value="packed"):
+    with patch("glume.cli.Glume.from_config", return_value=packer):
         run_cli(monkeypatch, [str(source), "--output", str(output)])
 
-    assert captured["ignore_patterns"] is None
+    packer.save.assert_called_once_with(str(output))
+    packer.pack.assert_not_called()
 
 
 def test_cli_optional_directory_argument(monkeypatch, tmp_path):

@@ -196,6 +196,73 @@ def test_pack_passes_empty_files_to_template(tmp_path):
     assert result == "count=0"
 
 
+def test_save_writes_output_file(tmp_path):
+    (tmp_path / "hello.txt").write_text("hello", encoding="utf-8")
+    output = tmp_path / "context.txt"
+
+    packer = Glume(tmp_path)
+    result = packer.save(output)
+
+    assert result == output.resolve()
+    assert output.exists()
+    assert "hello" in output.read_text(encoding="utf-8")
+
+
+def test_save_excludes_output_file_from_packed_content(tmp_path):
+    (tmp_path / "hello.txt").write_text("hello", encoding="utf-8")
+    output = tmp_path / "context.txt"
+    output.write_text("previous output", encoding="utf-8")
+
+    packer = Glume(tmp_path)
+    packer.save(output)
+
+    content = output.read_text(encoding="utf-8")
+
+    assert "hello" in content
+    assert "previous output" not in content
+    assert "context.txt" not in content
+
+
+def test_save_excludes_output_file_with_config_ignore_patterns(tmp_path):
+    (tmp_path / "hello.txt").write_text("hello", encoding="utf-8")
+    output = tmp_path / "context.txt"
+
+    packer = Glume.from_config(
+        config={"ignore_patterns": ["*.log"]},
+        target_dir=tmp_path,
+    )
+    original_ignores = packer._active_ignores.copy()
+
+    packer.save(output)
+
+    assert packer._active_ignores == original_ignores
+    assert "context.txt" not in output.read_text(encoding="utf-8")
+
+
+def test_save_does_not_ignore_external_output_file(tmp_path):
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "hello.txt").write_text("hello", encoding="utf-8")
+    output = tmp_path / "context.txt"
+
+    packer = Glume(source)
+    packer.save(output)
+
+    assert "hello" in output.read_text(encoding="utf-8")
+    assert packer._active_ignores is None
+
+
+def test_save_restores_ignore_patterns_when_packing_fails(tmp_path):
+    packer = Glume(tmp_path, ignore_patterns=["*.log"])
+    original_ignores = packer._active_ignores.copy()
+
+    with patch.object(packer, "pack", side_effect=RuntimeError("packing failed")):
+        with pytest.raises(RuntimeError, match="packing failed"):
+            packer.save(tmp_path / "context.txt")
+
+    assert packer._active_ignores == original_ignores
+
+
 def test_collect_files_applies_include_patterns_to_directories(tmp_path):
     src = tmp_path / "src"
     docs = tmp_path / "docs"
