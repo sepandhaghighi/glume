@@ -150,6 +150,34 @@ class Glume:
 
         prompt = Prompt(template=prompt_template)
         return prompt.render()
+    
+    def save(self, output_path: Union[str, Path]) -> Path:
+        """
+        Pack directory contents and save them to a file.
+        
+        :param output_path: Output path.
+        """
+        output_path = Path(output_path).resolve()
+        original_ignores = self._active_ignores
+
+        try:
+            try:
+                relative_output = output_path.relative_to(self._target_dir)
+                self._active_ignores = list(original_ignores or [])
+                if relative_output.as_posix() not in self._active_ignores:
+                    self._active_ignores.append(relative_output.as_posix())
+            except ValueError:
+                pass
+
+            result = self.pack()
+
+            with open(output_path, "w", encoding="utf-8") as f:
+                f.write(result)
+
+        finally:
+            self._active_ignores = original_ignores
+
+        return output_path
 
     @classmethod
     def from_config(
@@ -163,7 +191,7 @@ class Glume:
         include_tree: Optional[bool] = None,
         verbose: Optional[bool] = None,
         auto_discover: bool = False,
-    ):
+    ) -> "Glume":
         """
         Create a Glume instance from a config file or dictionary.
         
@@ -175,6 +203,7 @@ class Glume:
         :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
         :param include_tree: If True, includes the directory tree in the output.
         :param verbose: If True, prints warnings when files cannot be read.
+        :param auto_discover: Auto discover flag.
         """
         init_directory = target_dir if target_dir is not None else "."
         loaded_config = _load_config(init_directory, config, auto_discover=auto_discover)

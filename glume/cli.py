@@ -102,14 +102,6 @@ def main():
 
     dir_path = Path(directory).resolve() if directory else Path.cwd().resolve()
 
-    if args.output:
-        output_path = Path(args.output).resolve()
-        try:
-            relative_output = output_path.relative_to(dir_path)
-            args.ignore = (args.ignore or []) + [relative_output.as_posix()]
-        except ValueError:
-            pass
-
     if dir_path == Path.cwd().resolve():
         print(f"[Wizard Mode] Auto-packing current directory: {dir_path}", file=sys.stderr)
 
@@ -134,15 +126,15 @@ def main():
     )
 
     try:
-        result = packer.pack()
+        if args.output:
+            out_path = packer.save(args.output)
+        else:
+            result = packer.pack()
     except Exception as e:
         print(f"Error during packing: {e}", file=sys.stderr)
         sys.exit(1)
 
     if args.output:
-        out_path = Path(args.output)
-        with open(out_path, "w", encoding="utf-8") as f:
-            f.write(result)
         print(f"Context packed successfully into: {out_path}", file=sys.stderr)
     else:
         sys.stdout.write(result)
