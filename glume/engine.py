@@ -191,7 +191,7 @@ class Glume:
         include_tree: Optional[bool] = None,
         verbose: Optional[bool] = None,
         auto_discover: bool = False,
-    ):
+    ) -> "Glume":
         """
         Create a Glume instance from a config file or dictionary.
         
@@ -203,6 +203,7 @@ class Glume:
         :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
         :param include_tree: If True, includes the directory tree in the output.
         :param verbose: If True, prints warnings when files cannot be read.
+        :param auto_discover: Auto discover flag.
         """
         init_directory = target_dir if target_dir is not None else "."
         loaded_config = _load_config(init_directory, config, auto_discover=auto_discover)
