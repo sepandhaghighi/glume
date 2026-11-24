@@ -4,6 +4,8 @@
 import os
 import sys
 from pathlib import Path
+from datetime import datetime
+from uuid import uuid4
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
 from .params import DEFAULT_TEMPLATE
@@ -13,6 +15,8 @@ from .utils import _build_tree_structure, _validate_inputs, _filter_ignored_dire
 
 class Glume:
     """Pack directory files into a formatted text representation."""
+
+    DEFAULT_IGNORE_PATTERN = "glume_report_*.txt"
 
     def __init__(
         self,
@@ -50,7 +54,10 @@ class Glume:
         self._include_tree = include_tree
         self._verbose = verbose
 
-        active_ignores = list(ignore_patterns) if ignore_patterns else []
+        active_ignores = list(ignore_patterns or [])
+
+        if self.DEFAULT_IGNORE_PATTERN not in active_ignores:
+            active_ignores.append(self.DEFAULT_IGNORE_PATTERN)
 
         if use_gitignore:
             git_ignores = _load_gitignore_patterns(self._target_dir)
@@ -151,12 +158,17 @@ class Glume:
         prompt = Prompt(template=prompt_template)
         return prompt.render()
     
-    def save(self, output_path: Union[str, Path]) -> Path:
+    def save(self, output_path: Optional[Union[str, Path]] = None) -> Path:
         """
         Pack directory contents and save them to a file.
-        
-        :param output_path: Output path.
+
+        :param output_path: Optional output path. If omitted, a unique report file is created in the current directory.
         """
+        if output_path is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+            unique_id = uuid4().hex[:8]
+            output_path = Path.cwd() / f"glume_report_{timestamp}_{unique_id}.txt"
+
         output_path = Path(output_path).resolve()
         original_ignores = self._active_ignores
 
@@ -164,6 +176,7 @@ class Glume:
             try:
                 relative_output = output_path.relative_to(self._target_dir)
                 self._active_ignores = list(original_ignores or [])
+
                 if relative_output.as_posix() not in self._active_ignores:
                     self._active_ignores.append(relative_output.as_posix())
             except ValueError:
