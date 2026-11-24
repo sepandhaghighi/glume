@@ -100,11 +100,6 @@ def main():
     
     directory = args.directory_optional if args.directory_optional is not None else args.directory
 
-    dir_path = Path(directory).resolve() if directory else Path.cwd().resolve()
-
-    if dir_path == Path.cwd().resolve():
-        print(f"[Wizard Mode] Auto-packing current directory: {dir_path}", file=sys.stderr)
-
     template_content = None
     if args.template:
         try:
