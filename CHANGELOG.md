@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - `--config` CLI argument
+- `--stdout` CLI argument
 - `save` method
 - `from_config` method
 ### Changed
