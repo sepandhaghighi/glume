@@ -54,7 +54,7 @@ class Glume:
         self._include_tree = include_tree
         self._verbose = verbose
 
-        active_ignores = list(ignore_patterns or [])
+        active_ignores = list(ignore_patterns) if ignore_patterns else []
 
         if self.DEFAULT_IGNORE_PATTERN not in active_ignores:
             active_ignores.append(self.DEFAULT_IGNORE_PATTERN)
@@ -162,7 +162,7 @@ class Glume:
         """
         Pack directory contents and save them to a file.
 
-        :param output_path: Optional output path. If omitted, a unique report file is created in the current directory.
+        :param output_path: Optional output path.
         """
         if output_path is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
@@ -176,7 +176,6 @@ class Glume:
             try:
                 relative_output = output_path.relative_to(self._target_dir)
                 self._active_ignores = list(original_ignores or [])
-
                 if relative_output.as_posix() not in self._active_ignores:
                     self._active_ignores.append(relative_output.as_posix())
             except ValueError:

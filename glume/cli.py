@@ -56,7 +56,7 @@ def main():
     )
     parser.add_argument(
         "-o", "--output",
-        help="Custom output file path (default: automatically generated report)"
+        help="Output file path (default: automatically generated report)"
     )
     parser.add_argument(
         "-t", "--template",
