@@ -428,3 +428,57 @@ def test_save_generates_unique_output_paths(tmp_path, monkeypatch):
     assert first_path != second_path
     assert first_path.exists()
     assert second_path.exists()
+
+
+def test_read_only_properties(tmp_path):
+    packer = Glume(
+        target_dir=tmp_path,
+        custom_template="CUSTOM",
+        ignore_patterns=["*.log"],
+        include_patterns=["*.py"],
+        include_tree=False,
+        verbose=True,
+    )
+
+    assert packer.target_dir == tmp_path.resolve()
+    assert packer.custom_template == "CUSTOM"
+    assert packer.ignore_patterns == ["*.log", "glume_report_*.txt"]
+    assert packer.include_patterns == ["*.py"]
+    assert packer.include_tree is False
+    assert packer.verbose is True
+
+
+def test_properties_are_read_only(tmp_path):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(AttributeError):
+        packer.target_dir = tmp_path
+
+    with pytest.raises(AttributeError):
+        packer.custom_template = "CUSTOM"
+
+    with pytest.raises(AttributeError):
+        packer.ignore_patterns = []
+
+    with pytest.raises(AttributeError):
+        packer.include_patterns = []
+
+    with pytest.raises(AttributeError):
+        packer.include_tree = False
+
+    with pytest.raises(AttributeError):
+        packer.verbose = True
+
+
+def test_pattern_properties_return_copies(tmp_path):
+    packer = Glume(
+        target_dir=tmp_path,
+        ignore_patterns=["*.log"],
+        include_patterns=["*.py"],
+    )
+
+    packer.ignore_patterns.append("*.tmp")
+    packer.include_patterns.append("*.md")
+
+    assert packer.ignore_patterns == ["*.log", "glume_report_*.txt"]
+    assert packer.include_patterns == ["*.py"]
