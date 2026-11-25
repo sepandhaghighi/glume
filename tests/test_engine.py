@@ -402,7 +402,7 @@ def test_default_report_pattern_is_ignored(tmp_path):
     result = packer.pack()
 
     assert "hello.txt" in result
-    assert not "glume_report_old.txt" in result
+    assert "glume_report_old.txt" not in result
 
 
 def test_save_generates_default_output_path(tmp_path, monkeypatch):
