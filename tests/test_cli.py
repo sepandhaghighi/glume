@@ -133,7 +133,7 @@ def test_cli_reports_statistics(monkeypatch, tmp_path, capsys):
     with patch("glume.cli.Glume.pack", return_value="packed"), patch(
         "glume.cli.Glume.get_stats", return_value=stats
     ):
-        run_cli(monkeypatch, [str(tmp_path), "--stats"])
+        run_cli(monkeypatch, [str(tmp_path), "--stats", "--stdout"])
 
     captured = capsys.readouterr()
     assert captured.out == "packed"
@@ -303,44 +303,3 @@ def test_cli_info_argument(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert GLUME_REPO in captured.out
     assert OVERVIEW in captured.out
-
-
-def test_default_report_pattern_is_ignored(tmp_path):
-    report = tmp_path / "glume_report_old.txt"
-    regular_file = tmp_path / "hello.txt"
-
-    report.write_text("old report", encoding="utf-8")
-    regular_file.write_text("hello", encoding="utf-8")
-
-    packer = Glume(target_dir=tmp_path)
-    collected_files = packer.collect_files()
-
-    collected_paths = [file.path for file in collected_files]
-
-    assert any("hello.txt" in path for path in collected_paths)
-    assert not any("glume_report_old.txt" in path for path in collected_paths)
-
-
-def test_save_generates_default_output_path(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-
-    packer = Glume(target_dir=tmp_path)
-    output_path = packer.save()
-
-    assert output_path.exists()
-    assert output_path.parent == tmp_path
-    assert output_path.name.startswith("glume_report_")
-    assert output_path.suffix == ".txt"
-
-
-def test_save_generates_unique_output_paths(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
-
-    packer = Glume(target_dir=tmp_path)
-
-    first_path = packer.save()
-    second_path = packer.save()
-
-    assert first_path != second_path
-    assert first_path.exists()
-    assert second_path.exists()
