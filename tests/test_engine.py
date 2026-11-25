@@ -11,7 +11,7 @@ def test_initializes_with_defaults(tmp_path):
     assert packer._target_dir == tmp_path.resolve()
     assert packer._include_tree is True
     assert packer._verbose is False
-    assert packer._active_ignores is None
+    assert packer._active_ignores == ['glume_report_*.txt']
     assert packer._active_includes is None
 
 
@@ -62,7 +62,7 @@ def test_initializes_with_custom_options(tmp_path):
     )
 
     assert packer._custom_template == "CUSTOM"
-    assert packer._active_ignores == ["*.log"]
+    assert packer._active_ignores == ["*.log", "glume_report_*.txt"]
     assert packer._include_tree is False
     assert packer._verbose is True
 
@@ -249,7 +249,7 @@ def test_save_does_not_ignore_external_output_file(tmp_path):
     packer.save(output)
 
     assert "hello" in output.read_text(encoding="utf-8")
-    assert packer._active_ignores is None
+    assert packer._active_ignores == ["glume_report_*.txt"]
 
 
 def test_save_restores_ignore_patterns_when_packing_fails(tmp_path):
@@ -344,6 +344,7 @@ def test_from_config_merges_ignore_patterns(tmp_path):
         "*.log",
         "__pycache__",
         "*.tmp",
+        "glume_report_*.txt",
     ]
 
 
@@ -372,7 +373,7 @@ def test_from_config_uses_config_patterns_when_no_overrides(tmp_path):
         target_dir=tmp_path,
     )
 
-    assert packer._active_ignores == ["*.log"]
+    assert packer._active_ignores == ["*.log", "glume_report_*.txt"]
     assert packer._active_includes == ["*.py"]
 
 
@@ -386,5 +387,44 @@ def test_from_config_loads_glume_file(tmp_path):
 
     packer = Glume.from_config(target_dir=tmp_path, auto_discover=True)
 
-    assert packer._active_ignores == ["*.log"]
+    assert packer._active_ignores == ["*.log", "glume_report_*.txt"]
     assert packer._active_includes == ["*.py"]
+
+
+def test_default_report_pattern_is_ignored(tmp_path):
+    report = tmp_path / "glume_report_old.txt"
+    regular_file = tmp_path / "hello.txt"
+
+    report.write_text("old report", encoding="utf-8")
+    regular_file.write_text("hello", encoding="utf-8")
+
+    packer = Glume(target_dir=tmp_path)
+    result = packer.pack()
+
+    assert "hello.txt" in result
+    assert "glume_report_old.txt" not in result
+
+
+def test_save_generates_default_output_path(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+
+    packer = Glume(target_dir=tmp_path)
+    output_path = packer.save()
+
+    assert output_path.exists()
+    assert output_path.parent == tmp_path
+    assert output_path.name.startswith("glume_report_")
+    assert output_path.suffix == ".txt"
+
+
+def test_save_generates_unique_output_paths(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+
+    packer = Glume(target_dir=tmp_path)
+
+    first_path = packer.save()
+    second_path = packer.save()
+
+    assert first_path != second_path
+    assert first_path.exists()
+    assert second_path.exists()

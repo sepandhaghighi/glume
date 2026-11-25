@@ -133,7 +133,7 @@ def test_cli_reports_statistics(monkeypatch, tmp_path, capsys):
     with patch("glume.cli.Glume.pack", return_value="packed"), patch(
         "glume.cli.Glume.get_stats", return_value=stats
     ):
-        run_cli(monkeypatch, [str(tmp_path), "--stats"])
+        run_cli(monkeypatch, [str(tmp_path), "--stats", "--stdout"])
 
     captured = capsys.readouterr()
     assert captured.out == "packed"

@@ -50,8 +50,13 @@ def main():
         help="Target directory to pack (overrides positional directory)"
     )
     parser.add_argument(
+        "--stdout",
+        action="store_true",
+        help="Print the packed content to standard output"
+    )
+    parser.add_argument(
         "-o", "--output",
-        help="Output file path (default: prints to stdout)"
+        help="Output file path (default: automatically generated report)"
     )
     parser.add_argument(
         "-t", "--template",
@@ -121,18 +126,17 @@ def main():
     )
 
     try:
-        if args.output:
-            out_path = packer.save(args.output)
-        else:
-            result = packer.pack()
+        out_path = packer.save(args.output)
+
+        if args.stdout:
+            with open(out_path, "r", encoding="utf-8") as f:
+                sys.stdout.write(f.read())
+
     except Exception as e:
         print(f"Error during packing: {e}", file=sys.stderr)
         sys.exit(1)
 
-    if args.output:
-        print(f"Context packed successfully into: {out_path}", file=sys.stderr)
-    else:
-        sys.stdout.write(result)
+    print(f"Context packed successfully into: {out_path}", file=sys.stderr)
 
     if args.stats:
         stats = packer.get_stats()
