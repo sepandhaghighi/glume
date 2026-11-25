@@ -241,3 +241,33 @@ class Glume:
             include_tree=resolved_include_tree,
             verbose=resolved_verbose,
         )
+    
+    @property
+    def target_dir(self) -> Path:
+        """Return the target directory."""
+        return self._target_dir
+
+    @property
+    def custom_template(self) -> str:
+        """Return the custom template."""
+        return self._custom_template
+
+    @property
+    def ignore_patterns(self) -> Optional[List[str]]:
+        """Return the active ignore patterns."""
+        return list(self._active_ignores) if self._active_ignores else None
+
+    @property
+    def include_patterns(self) -> Optional[List[str]]:
+        """Return the active include patterns."""
+        return list(self._active_includes) if self._active_includes else None
+
+    @property
+    def include_tree(self) -> bool:
+        """Return whether the directory tree is included."""
+        return self._include_tree
+
+    @property
+    def verbose(self) -> bool:
+        """Return whether verbose warnings are enabled."""
+        return self._verbose
