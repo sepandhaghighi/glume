@@ -20,13 +20,14 @@ from .params import (
     INVALID_CONFIG_TYPE_ERROR,
     INVALID_CONFIG_FILE_ERROR,
     INVALID_CONFIG_FORMAT_ERROR,
+    DEFAULT_AUTO_DISCOVER,
 )
 
 
 def _load_config(
     directory: Union[str, Path],
     config_source: Optional[Union[str, Path, dict]] = None,
-    auto_discover: bool = False,
+    auto_discover: bool = DEFAULT_AUTO_DISCOVER,
 ) -> dict:
     """Load config."""
     if config_source is None:

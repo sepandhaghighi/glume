@@ -3,6 +3,7 @@ from pathlib import Path
 from unittest.mock import mock_open, patch
 import pytest
 from glume import Glume
+from glume.params import DEFAULT_IGNORE_PATTERNS
 
 
 def test_initializes_with_defaults(tmp_path):
@@ -11,7 +12,7 @@ def test_initializes_with_defaults(tmp_path):
     assert packer._target_dir == tmp_path.resolve()
     assert packer._include_tree is True
     assert packer._verbose is False
-    assert packer._active_ignores == ['glume_report_*.txt']
+    assert packer._active_ignores == DEFAULT_IGNORE_PATTERNS
     assert packer._active_includes is None
 
 
@@ -62,7 +63,7 @@ def test_initializes_with_custom_options(tmp_path):
     )
 
     assert packer._custom_template == "CUSTOM"
-    assert packer._active_ignores == ["*.log", "glume_report_*.txt"]
+    assert packer._active_ignores == ["*.log", *DEFAULT_IGNORE_PATTERNS]
     assert packer._include_tree is False
     assert packer._verbose is True
 
@@ -249,7 +250,7 @@ def test_save_does_not_ignore_external_output_file(tmp_path):
     packer.save(output)
 
     assert "hello" in output.read_text(encoding="utf-8")
-    assert packer._active_ignores == ["glume_report_*.txt"]
+    assert packer._active_ignores == DEFAULT_IGNORE_PATTERNS
 
 
 def test_save_restores_ignore_patterns_when_packing_fails(tmp_path):
@@ -344,7 +345,7 @@ def test_from_config_merges_ignore_patterns(tmp_path):
         "*.log",
         "__pycache__",
         "*.tmp",
-        "glume_report_*.txt",
+        *DEFAULT_IGNORE_PATTERNS,
     ]
 
 
@@ -373,7 +374,7 @@ def test_from_config_uses_config_patterns_when_no_overrides(tmp_path):
         target_dir=tmp_path,
     )
 
-    assert packer._active_ignores == ["*.log", "glume_report_*.txt"]
+    assert packer._active_ignores == ["*.log", *DEFAULT_IGNORE_PATTERNS]
     assert packer._active_includes == ["*.py"]
 
 
@@ -387,7 +388,7 @@ def test_from_config_loads_glume_file(tmp_path):
 
     packer = Glume.from_config(target_dir=tmp_path, auto_discover=True)
 
-    assert packer._active_ignores == ["*.log", "glume_report_*.txt"]
+    assert packer._active_ignores == ["*.log", *DEFAULT_IGNORE_PATTERNS]
     assert packer._active_includes == ["*.py"]
 
 
@@ -442,7 +443,7 @@ def test_read_only_properties(tmp_path):
 
     assert packer.target_dir == tmp_path.resolve()
     assert packer.custom_template == "CUSTOM"
-    assert packer.ignore_patterns == ["*.log", "glume_report_*.txt"]
+    assert packer.ignore_patterns == ["*.log", *DEFAULT_IGNORE_PATTERNS]
     assert packer.include_patterns == ["*.py"]
     assert packer.include_tree is False
     assert packer.verbose is True
@@ -480,5 +481,5 @@ def test_pattern_properties_return_copies(tmp_path):
     packer.ignore_patterns.append("*.tmp")
     packer.include_patterns.append("*.md")
 
-    assert packer.ignore_patterns == ["*.log", "glume_report_*.txt"]
+    assert packer.ignore_patterns == ["*.log", *DEFAULT_IGNORE_PATTERNS]
     assert packer.include_patterns == ["*.py"]

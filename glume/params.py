@@ -28,6 +28,15 @@ INVALID_CONFIG_FORMAT_ERROR = "Config file content must be a valid TOML format."
 
 BOOLEAN_ARGUMENT_TYPE_ERROR = "{name} must be a boolean."
 
+DEFAULT_TARGET_DIR = "."
+DEFAULT_USE_GITIGNORE = False
+DEFAULT_INCLUDE_TREE = True
+DEFAULT_VERBOSE = False
+DEFAULT_AUTO_DISCOVER = False
+DEFAULT_IGNORE_PATTERNS = ["glume_report_*.txt"]
+DEFAULT_REPORT_PREFIX = "glume_report_"
+DEFAULT_REPORT_TIMESTAMP_FORMAT = "%Y%m%d_%H%M%S_%f"
+DEFAULT_REPORT_EXTENSION = ".txt"
 DEFAULT_TEMPLATE = """
 {% if include_tree %}
 <folder_structure>
