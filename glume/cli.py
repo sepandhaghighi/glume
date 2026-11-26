@@ -108,8 +108,7 @@ def main():
     template_content = None
     if args.template:
         try:
-            with open(args.template, "r", encoding="utf-8") as f:
-                template_content = f.read()
+            template_content = Path(args.template).read_text(encoding="utf-8")
         except Exception as e:
             print(f"Error reading template file: {e}", file=sys.stderr)
             sys.exit(1)
