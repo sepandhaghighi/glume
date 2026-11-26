@@ -483,3 +483,110 @@ def test_pattern_properties_return_copies(tmp_path):
 
     assert packer.ignore_patterns == ["*.log", *DEFAULT_IGNORE_PATTERNS]
     assert packer.include_patterns == ["*.py"]
+
+def test_set_target_dir(tmp_path):
+    packer = Glume()
+    packer.set_target_dir(tmp_path)
+
+    assert packer.target_dir == tmp_path.resolve()
+
+
+def test_set_custom_template(tmp_path):
+    packer = Glume(target_dir=tmp_path)
+
+    packer.set_custom_template("CUSTOM")
+
+    assert packer.custom_template == "CUSTOM"
+
+
+def test_set_custom_template_to_default(tmp_path):
+    packer = Glume(target_dir=tmp_path, custom_template="CUSTOM")
+
+    packer.set_custom_template(None)
+
+    from glume.params import DEFAULT_TEMPLATE
+    assert packer.custom_template == DEFAULT_TEMPLATE
+
+
+def test_set_ignore_patterns(tmp_path):
+    packer = Glume(target_dir=tmp_path)
+
+    packer.set_ignore_patterns(["*.log"])
+
+    assert packer.ignore_patterns == ["*.log", *DEFAULT_IGNORE_PATTERNS]
+
+
+def test_add_ignore_pattern(tmp_path):
+    packer = Glume(target_dir=tmp_path)
+
+    packer.add_ignore_pattern("*.log")
+
+    assert "*.log" in packer.ignore_patterns
+
+
+def test_remove_ignore_pattern(tmp_path):
+    packer = Glume(target_dir=tmp_path, ignore_patterns=["*.log"])
+
+    packer.remove_ignore_pattern("*.log")
+
+    assert "*.log" not in packer.ignore_patterns
+    assert packer.ignore_patterns == DEFAULT_IGNORE_PATTERNS
+
+
+def test_set_include_patterns(tmp_path):
+    packer = Glume(target_dir=tmp_path)
+
+    packer.set_include_patterns(["*.py", "*.md"])
+
+    assert packer.include_patterns == ["*.py", "*.md"]
+
+
+def test_set_include_patterns_to_none(tmp_path):
+    packer = Glume(target_dir=tmp_path, include_patterns=["*.py"])
+
+    packer.set_include_patterns(None)
+
+    assert packer.include_patterns is None
+
+
+def test_add_include_pattern(tmp_path):
+    packer = Glume(target_dir=tmp_path, include_patterns=["*.py"])
+
+    packer.add_include_pattern("*.md")
+
+    assert packer.include_patterns == ["*.py", "*.md"]
+
+
+def test_remove_include_pattern(tmp_path):
+    packer = Glume(
+        target_dir=tmp_path,
+        include_patterns=["*.py", "*.md"],
+    )
+
+    packer.remove_include_pattern("*.py")
+
+    assert packer.include_patterns == ["*.md"]
+
+
+def test_remove_last_include_pattern(tmp_path):
+    packer = Glume(target_dir=tmp_path, include_patterns=["*.py"])
+
+    packer.remove_include_pattern("*.py")
+
+    assert packer.include_patterns is None
+
+
+def test_set_include_tree(tmp_path):
+    packer = Glume(target_dir=tmp_path)
+
+    packer.set_include_tree(False)
+
+    assert packer.include_tree is False
+
+
+def test_set_verbose(tmp_path):
+    packer = Glume(target_dir=tmp_path)
+
+    packer.set_verbose(True)
+
+    assert packer.verbose is True

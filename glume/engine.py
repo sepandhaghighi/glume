@@ -252,6 +252,182 @@ class Glume:
             verbose=resolved_verbose,
         )
     
+    def set_target_dir(self, target_dir: Union[str, Path]) -> None:
+        """
+        Set the target directory.
+        
+        :param target_dir: Root directory containing files to pack.
+        """
+        _validate_inputs(
+            target_dir=target_dir,
+            custom_template=self._custom_template,
+            ignore_patterns=None,
+            include_patterns=None,
+            use_gitignore=False,
+            include_tree=self._include_tree,
+            verbose=self._verbose,
+        )
+        self._target_dir = Path(target_dir).resolve()
+    
+    def set_custom_template(self, custom_template: Optional[str]) -> None:
+        """
+        Set the custom template.
+        
+        :param custom_template: Optional Jinja2 template string for rendering the output.
+        """
+        _validate_inputs(
+            target_dir=self._target_dir,
+            custom_template=custom_template,
+            ignore_patterns=None,
+            include_patterns=None,
+            use_gitignore=False,
+            include_tree=self._include_tree,
+            verbose=self._verbose,
+        )
+        self._custom_template = custom_template or DEFAULT_TEMPLATE
+
+    def set_ignore_patterns(self, ignore_patterns: Optional[List[str]]) -> None:
+        """
+        Set the ignore patterns.
+        
+        :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+        """
+        _validate_inputs(
+            target_dir=self._target_dir,
+            custom_template=self._custom_template,
+            ignore_patterns=ignore_patterns,
+            include_patterns=None,
+            use_gitignore=False,
+            include_tree=self._include_tree,
+            verbose=self._verbose,
+        )
+
+        patterns = list(ignore_patterns) if ignore_patterns else []
+
+        for pattern in DEFAULT_IGNORE_PATTERNS:
+            if pattern not in patterns:
+                patterns.append(pattern)
+
+        self._active_ignores = patterns or None
+    
+    def add_ignore_pattern(self, pattern: str) -> None:
+        """
+        Add an ignore pattern.
+        
+        :param pattern: An ignore pattern
+        """
+        patterns = list(self._active_ignores or [])
+        patterns.append(pattern)
+        self.set_ignore_patterns(patterns)
+
+    def remove_ignore_pattern(self, pattern: str) -> None:
+        """
+        Remove an ignore pattern.
+        
+        :param pattern: An ignore pattern
+        """
+        _validate_inputs(
+            target_dir=self._target_dir,
+            custom_template=self._custom_template,
+            ignore_patterns=[pattern],
+            include_patterns=None,
+            use_gitignore=False,
+            include_tree=self._include_tree,
+            verbose=self._verbose,
+        )
+
+        patterns = list(self._active_ignores or [])
+
+        if pattern in patterns and pattern not in DEFAULT_IGNORE_PATTERNS:
+            patterns.remove(pattern)
+
+        self._active_ignores = patterns or None
+
+    def set_include_patterns(self, include_patterns: Optional[List[str]]) -> None:
+        """
+        Set the include patterns.
+        
+        :param include_patterns: Optional list of glob patterns for files and directories to include.
+        """
+        _validate_inputs(
+            target_dir=self._target_dir,
+            custom_template=self._custom_template,
+            ignore_patterns=None,
+            include_patterns=include_patterns,
+            use_gitignore=False,
+            include_tree=self._include_tree,
+            verbose=self._verbose,
+        )
+
+        self._active_includes = list(include_patterns) if include_patterns else None
+
+    def add_include_pattern(self, pattern: str) -> None:
+        """
+        Add an include pattern.
+        
+        :param pattern: An include pattern
+        """
+        patterns = list(self._active_includes or [])
+        patterns.append(pattern)
+        self.set_include_patterns(patterns)
+
+    def remove_include_pattern(self, pattern: str) -> None:
+        """
+        Remove an include pattern.
+        
+        :param pattern: An include pattern
+        """
+        _validate_inputs(
+            target_dir=self._target_dir,
+            custom_template=self._custom_template,
+            ignore_patterns=None,
+            include_patterns=[pattern],
+            use_gitignore=False,
+            include_tree=self._include_tree,
+            verbose=self._verbose,
+        )
+
+        patterns = list(self._active_includes or [])
+
+        if pattern in patterns:
+            patterns.remove(pattern)
+
+        self._active_includes = patterns or None
+
+    def set_include_tree(self, include_tree: bool) -> None:
+        """
+        Set whether the directory tree is included.
+        
+        :param include_tree: If True, includes the directory tree in the output.
+        """
+        _validate_inputs(
+            target_dir=self._target_dir,
+            custom_template=self._custom_template,
+            ignore_patterns=None,
+            include_patterns=None,
+            use_gitignore=False,
+            include_tree=include_tree,
+            verbose=self._verbose,
+        )
+        self._include_tree = include_tree
+
+    def set_verbose(self, verbose: bool) -> None:
+        """
+        Set whether verbose warnings are enabled.
+        
+        :param verbose: If True, prints warnings when files cannot be read.
+        """
+        _validate_inputs(
+            target_dir=self._target_dir,
+            custom_template=self._custom_template,
+            ignore_patterns=None,
+            include_patterns=None,
+            use_gitignore=False,
+            include_tree=self._include_tree,
+            verbose=verbose,
+        )
+        self._verbose = verbose
+    
     @property
     def target_dir(self) -> Path:
         """Return the target directory."""

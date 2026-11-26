@@ -16,6 +16,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `include_patterns` property
 - `include_tree` property
 - `verbose` property
+- `set_target_dir` method
+- `set_custom_template` method
+- `set_ignore_patterns` method
+- `add_ignore_pattern` method
+- `remove_ignore_pattern` method
+- `set_include_patterns` method
+- `add_include_pattern` method
+- `remove_include_pattern` method
+- `set_include_tree` method
+- `set_verbose` method
 ### Changed
 - Test system modified
 - Default values moved to `params.py`
