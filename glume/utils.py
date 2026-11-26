@@ -281,7 +281,7 @@ def _build_tree_structure(root_path: Path,
         :param prefix: Prefix used to align entries in the directory tree.
         """
         try:
-            entries = sorted(list(dir_path.iterdir()), key=lambda e: (not e.is_dir(), e.name.lower()))
+            entries = sorted(dir_path.iterdir(), key=lambda e: (not e.is_dir(), e.name.lower()))
         except PermissionError:
             return
 

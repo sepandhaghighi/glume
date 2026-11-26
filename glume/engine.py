@@ -99,8 +99,7 @@ class Glume:
             dirs[:] = filtered_dirs
             for file in files:
                 full_path = Path(root) / file
-                rel_path = full_path.relative_to(self._target_dir)
-                rel_path_str = str(rel_path).replace("\\", "/")
+                rel_path_str = full_path.relative_to(self._target_dir).as_posix()
 
                 if _matches_patterns(rel_path_str, self._active_ignores):
                     self._ignored_paths.append(rel_path_str)
