@@ -27,6 +27,7 @@ INVALID_CONFIG_FILE_ERROR = "Failed to load config file: {error}"
 INVALID_CONFIG_FORMAT_ERROR = "Config file content must be a valid TOML format."
 
 BOOLEAN_ARGUMENT_TYPE_ERROR = "{name} must be a boolean."
+NON_EMPTY_STRING_ARGUMENT_TYPE_ERROR = "{name} must be a non-empty string."
 
 DEFAULT_TARGET_DIR = "."
 DEFAULT_USE_GITIGNORE = False

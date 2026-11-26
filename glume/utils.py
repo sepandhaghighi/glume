@@ -17,6 +17,7 @@ from .params import (
     INCLUDE_PATTERNS_TYPE_ERROR,
     INCLUDE_PATTERN_TYPE_ERROR,
     BOOLEAN_ARGUMENT_TYPE_ERROR,
+    NON_EMPTY_STRING_ARGUMENT_TYPE_ERROR,
     INVALID_CONFIG_TYPE_ERROR,
     INVALID_CONFIG_FILE_ERROR,
     INVALID_CONFIG_FORMAT_ERROR,
@@ -64,6 +65,16 @@ def _load_config(
             raise e
         raise GlumeValidationError(INVALID_CONFIG_FILE_ERROR.format(error=e))
 
+
+def _validate_string(value: Any, name: str) -> None:
+    """
+    Validate string.
+
+    :param value: value
+    :param name: parameter name
+    """
+    if not isinstance(value, str) or not value.strip():
+        raise GlumeValidationError(NON_EMPTY_STRING_ARGUMENT_TYPE_ERROR.format(name=name))
 
 
 def _validate_target_dir(target_dir: Any) -> None:
