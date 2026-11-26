@@ -31,6 +31,7 @@ from .utils import (
     _validate_use_gitignore,
     _validate_include_tree,
     _validate_verbose,
+    _validate_non_empty_string,
 )
 
 
@@ -300,6 +301,7 @@ class Glume:
         
         :param pattern: An ignore pattern
         """
+        _validate_non_empty_string(pattern, "pattern")
         patterns = list(self._active_ignores or [])
         patterns.append(pattern)
         self.set_ignore_patterns(patterns)
@@ -310,7 +312,7 @@ class Glume:
         
         :param pattern: An ignore pattern
         """
-        _validate_ignore_patterns([pattern])
+        _validate_non_empty_string(pattern, "pattern")
 
         patterns = list(self._active_ignores or [])
 
@@ -335,6 +337,7 @@ class Glume:
         
         :param pattern: An include pattern
         """
+        _validate_non_empty_string(pattern, "pattern")
         patterns = list(self._active_includes or [])
         patterns.append(pattern)
         self.set_include_patterns(patterns)
@@ -345,7 +348,7 @@ class Glume:
         
         :param pattern: An include pattern
         """
-        _validate_include_patterns([pattern])
+        _validate_non_empty_string(pattern, "pattern")
 
         patterns = list(self._active_includes or [])
 
