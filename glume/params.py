@@ -18,9 +18,7 @@ TARGET_DIR_INVALID_ERROR = "target_dir must exist and be a directory: {path}"
 CUSTOM_TEMPLATE_TYPE_ERROR = "custom_template must be a non-empty string or None."
 
 IGNORE_PATTERNS_TYPE_ERROR = "ignore_patterns must be a list of non-empty strings or None."
-IGNORE_PATTERN_TYPE_ERROR = "ignore_patterns[{index}] must be a non-empty string."
 INCLUDE_PATTERNS_TYPE_ERROR = "include_patterns must be a list of non-empty strings or None."
-INCLUDE_PATTERN_TYPE_ERROR = "include_patterns[{index}] must be a non-empty string."
 
 INVALID_CONFIG_TYPE_ERROR = "config must be str, pathlib.Path, or dict."
 INVALID_CONFIG_FILE_ERROR = "Failed to load config file: {error}"
