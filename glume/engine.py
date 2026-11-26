@@ -38,7 +38,6 @@ from .utils import (
 class Glume:
     """Pack directory files into a formatted text representation."""
 
-    
     def __init__(
         self,
         target_dir: Union[str, Path] = DEFAULT_TARGET_DIR,
@@ -166,7 +165,6 @@ class Glume:
         prompt = Prompt(template=prompt_template)
         return prompt.render()
     
-    
     def save(self, output_path: Optional[Union[str, Path]] = None) -> Path:
         """
         Pack directory contents and save them to a file.
@@ -176,9 +174,7 @@ class Glume:
         if output_path is None:
             timestamp = datetime.now().strftime(DEFAULT_REPORT_TIMESTAMP_FORMAT)
             unique_id = uuid4().hex[:8]
-            output_path = Path.cwd() / (
-                f"{DEFAULT_REPORT_PREFIX}{timestamp}_{unique_id}{DEFAULT_REPORT_EXTENSION}"
-            )
+            output_path = Path.cwd() / f"{DEFAULT_REPORT_PREFIX}{timestamp}_{unique_id}{DEFAULT_REPORT_EXTENSION}"
 
         output_path = Path(output_path).resolve()
         original_ignores = self.ignore_patterns
@@ -199,7 +195,6 @@ class Glume:
             self.set_ignore_patterns(original_ignores)
 
         return output_path
-
 
     @classmethod
     def from_config(
