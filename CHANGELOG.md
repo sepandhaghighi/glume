@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `--stdout` CLI argument
 - `save` method
 - `from_config` method
+- `target_dir` property
+- `custom_template` property
+- `ignore_patterns` property
+- `include_patterns` property
+- `include_tree` property
+- `verbose` property
 ### Changed
 - Test system modified
 ## [0.2] - 2026-11-22
