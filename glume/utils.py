@@ -13,9 +13,7 @@ from .params import (
     TARGET_DIR_INVALID_ERROR,
     CUSTOM_TEMPLATE_TYPE_ERROR,
     IGNORE_PATTERNS_TYPE_ERROR,
-    IGNORE_PATTERN_TYPE_ERROR,
     INCLUDE_PATTERNS_TYPE_ERROR,
-    INCLUDE_PATTERN_TYPE_ERROR,
     BOOLEAN_ARGUMENT_TYPE_ERROR,
     NON_EMPTY_STRING_ARGUMENT_TYPE_ERROR,
     INVALID_CONFIG_TYPE_ERROR,
@@ -66,9 +64,9 @@ def _load_config(
         raise GlumeValidationError(INVALID_CONFIG_FILE_ERROR.format(error=e))
 
 
-def _validate_string(value: Any, name: str) -> None:
+def _validate_non_empty_string(value: Any, name: str) -> None:
     """
-    Validate string.
+    Validate non-empty string.
 
     :param value: value
     :param name: parameter name
@@ -117,8 +115,7 @@ def _validate_ignore_patterns(ignore_patterns: Any) -> None:
             raise GlumeValidationError(IGNORE_PATTERNS_TYPE_ERROR)
 
         for index, pattern in enumerate(ignore_patterns):
-            if not isinstance(pattern, str) or not pattern.strip():
-                raise GlumeValidationError(IGNORE_PATTERN_TYPE_ERROR.format(index=index))
+            _validate_non_empty_string(pattern, "ignore_patterns[{index}]".format(index=index))
 
 
 def _validate_include_patterns(include_patterns: Any) -> None:
@@ -132,8 +129,7 @@ def _validate_include_patterns(include_patterns: Any) -> None:
             raise GlumeValidationError(INCLUDE_PATTERNS_TYPE_ERROR)
 
         for index, pattern in enumerate(include_patterns):
-            if not isinstance(pattern, str) or not pattern.strip():
-                raise GlumeValidationError(INCLUDE_PATTERN_TYPE_ERROR.format(index=index))
+            _validate_non_empty_string(pattern, "include_patterns[{index}]".format(index=index))
 
 
 def _validate_use_gitignore(use_gitignore: Any) -> None:
