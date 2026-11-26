@@ -147,7 +147,7 @@ def test_validation_error_for_remove_include_pattern(tmp_path, pattern):
 def test_validation_error_for_set_include_tree(tmp_path, value):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError, match=f"include_tree must be a boolean"):
+    with pytest.raises(GlumeValidationError, match="include_tree must be a boolean"):
         packer.set_include_tree(value)
 
 
@@ -155,5 +155,5 @@ def test_validation_error_for_set_include_tree(tmp_path, value):
 def test_validation_error_for_set_verbose(tmp_path, value):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError, match=f"verbose must be a boolean"):
+    with pytest.raises(GlumeValidationError, match="verbose must be a boolean"):
         packer.set_verbose(value)
