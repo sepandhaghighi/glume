@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `set_verbose` method
 ### Changed
 - Test system modified
+- Validation system modified
 - Default values moved to `params.py`
 ## [0.2] - 2026-11-22
 ### Added
