@@ -78,7 +78,7 @@ class Glume:
         self._ignored_paths: List[str] = []
         self._binary_files: List[str] = []
         self._failed_files: List[Dict[str, str]] = []
-        
+
     def collect_files(self) -> List[dict]:
         """Collect readable, non-binary files from the target directory."""
         self._included_files = []
@@ -166,6 +166,7 @@ class Glume:
         prompt = Prompt(template=prompt_template)
         return prompt.render()
     
+    
     def save(self, output_path: Optional[Union[str, Path]] = None) -> Path:
         """
         Pack directory contents and save them to a file.
@@ -175,17 +176,17 @@ class Glume:
         if output_path is None:
             timestamp = datetime.now().strftime(DEFAULT_REPORT_TIMESTAMP_FORMAT)
             unique_id = uuid4().hex[:8]
-            output_path = Path.cwd() / (f"{DEFAULT_REPORT_PREFIX}{timestamp}_{unique_id}{DEFAULT_REPORT_EXTENSION}")
+            output_path = Path.cwd() / (
+                f"{DEFAULT_REPORT_PREFIX}{timestamp}_{unique_id}{DEFAULT_REPORT_EXTENSION}"
+            )
 
         output_path = Path(output_path).resolve()
-        original_ignores = self._active_ignores
+        original_ignores = self.ignore_patterns
 
         try:
             try:
                 relative_output = output_path.relative_to(self._target_dir)
-                self._active_ignores = list(original_ignores or [])
-                if relative_output.as_posix() not in self._active_ignores:
-                    self._active_ignores.append(relative_output.as_posix())
+                self.add_ignore_pattern(relative_output.as_posix())
             except ValueError:
                 pass
 
@@ -195,9 +196,10 @@ class Glume:
                 f.write(result)
 
         finally:
-            self._active_ignores = original_ignores
+            self.set_ignore_patterns(original_ignores)
 
         return output_path
+
 
     @classmethod
     def from_config(
