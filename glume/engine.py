@@ -253,7 +253,11 @@ class Glume:
         )
     
     def set_target_dir(self, target_dir: Union[str, Path]) -> None:
-        """Set the target directory."""
+        """
+        Set the target directory.
+        
+        :param target_dir: Root directory containing files to pack.
+        """
         _validate_inputs(
             target_dir=target_dir,
             custom_template=self._custom_template,
@@ -266,7 +270,11 @@ class Glume:
         self._target_dir = Path(target_dir).resolve()
     
     def set_custom_template(self, custom_template: Optional[str]) -> None:
-        """Set the custom template."""
+        """
+        Set the custom template.
+        
+        :param custom_template: Optional Jinja2 template string for rendering the output.
+        """
         _validate_inputs(
             target_dir=self._target_dir,
             custom_template=custom_template,
@@ -279,7 +287,11 @@ class Glume:
         self._custom_template = custom_template or DEFAULT_TEMPLATE
 
     def set_ignore_patterns(self, ignore_patterns: Optional[List[str]]) -> None:
-        """Set the ignore patterns."""
+        """
+        Set the ignore patterns.
+        
+        :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+        """
         _validate_inputs(
             target_dir=self._target_dir,
             custom_template=self._custom_template,
@@ -299,13 +311,21 @@ class Glume:
         self._active_ignores = patterns or None
     
     def add_ignore_pattern(self, pattern: str) -> None:
-        """Add an ignore pattern."""
+        """
+        Add an ignore pattern.
+        
+        :param pattern: An ignore pattern
+        """
         patterns = list(self._active_ignores or [])
         patterns.append(pattern)
         self.set_ignore_patterns(patterns)
 
     def remove_ignore_pattern(self, pattern: str) -> None:
-        """Remove an ignore pattern."""
+        """
+        Remove an ignore pattern.
+        
+        :param pattern: An ignore pattern
+        """
         _validate_inputs(
             target_dir=self._target_dir,
             custom_template=self._custom_template,
@@ -324,7 +344,11 @@ class Glume:
         self._active_ignores = patterns or None
 
     def set_include_patterns(self, include_patterns: Optional[List[str]]) -> None:
-        """Set the include patterns."""
+        """
+        Set the include patterns.
+        
+        :param include_patterns: Optional list of glob patterns for files and directories to include.
+        """
         _validate_inputs(
             target_dir=self._target_dir,
             custom_template=self._custom_template,
@@ -338,13 +362,21 @@ class Glume:
         self._active_includes = list(include_patterns) if include_patterns else None
 
     def add_include_pattern(self, pattern: str) -> None:
-        """Add an include pattern."""
+        """
+        Add an include pattern.
+        
+        :param pattern: An include pattern
+        """
         patterns = list(self._active_includes or [])
         patterns.append(pattern)
         self.set_include_patterns(patterns)
 
     def remove_include_pattern(self, pattern: str) -> None:
-        """Remove an include pattern."""
+        """
+        Remove an include pattern.
+        
+        :param pattern: An include pattern
+        """
         _validate_inputs(
             target_dir=self._target_dir,
             custom_template=self._custom_template,
@@ -363,7 +395,11 @@ class Glume:
         self._active_includes = patterns or None
 
     def set_include_tree(self, include_tree: bool) -> None:
-        """Set whether the directory tree is included."""
+        """
+        Set whether the directory tree is included.
+        
+        :param include_tree: If True, includes the directory tree in the output.
+        """
         _validate_inputs(
             target_dir=self._target_dir,
             custom_template=self._custom_template,
@@ -376,7 +412,11 @@ class Glume:
         self._include_tree = include_tree
 
     def set_verbose(self, verbose: bool) -> None:
-        """Set whether verbose warnings are enabled."""
+        """
+        Set whether verbose warnings are enabled.
+        
+        :param verbose: If True, prints warnings when files cannot be read.
+        """
         _validate_inputs(
             target_dir=self._target_dir,
             custom_template=self._custom_template,
