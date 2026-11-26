@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `verbose` property
 ### Changed
 - Test system modified
+- Default values moved to `params.py`
 ## [0.2] - 2026-11-22
 ### Added
 - `--directory` CLI argument
