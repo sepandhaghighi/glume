@@ -21,7 +21,17 @@ from .params import (
     DEFAULT_REPORT_EXTENSION,
 )
 from .utils import _load_gitignore_patterns, _matches_patterns, _is_binary_file, _load_config
-from .utils import _build_tree_structure, _validate_inputs, _filter_ignored_directories
+from .utils import (
+    _build_tree_structure,
+    _filter_ignored_directories,
+    _validate_target_dir,
+    _validate_custom_template,
+    _validate_ignore_patterns,
+    _validate_include_patterns,
+    _validate_use_gitignore,
+    _validate_include_tree,
+    _validate_verbose,
+)
 
 
 class Glume:
@@ -48,15 +58,13 @@ class Glume:
         :param include_tree: If True, includes the directory tree in the output.
         :param verbose: If True, prints warnings when files cannot be read.
         """
-        _validate_inputs(
-            target_dir=target_dir,
-            custom_template=custom_template,
-            ignore_patterns=ignore_patterns,
-            include_patterns=include_patterns,
-            use_gitignore=use_gitignore,
-            include_tree=include_tree,
-            verbose=verbose,
-        )
+        _validate_target_dir(target_dir)
+        _validate_custom_template(custom_template)
+        _validate_ignore_patterns(ignore_patterns)
+        _validate_include_patterns(include_patterns)
+        _validate_use_gitignore(use_gitignore)
+        _validate_include_tree(include_tree)
+        _validate_verbose(verbose)
 
         self._target_dir = Path(target_dir).resolve()
         self._custom_template = custom_template or DEFAULT_TEMPLATE
@@ -258,15 +266,7 @@ class Glume:
         
         :param target_dir: Root directory containing files to pack.
         """
-        _validate_inputs(
-            target_dir=target_dir,
-            custom_template=self._custom_template,
-            ignore_patterns=None,
-            include_patterns=None,
-            use_gitignore=False,
-            include_tree=self._include_tree,
-            verbose=self._verbose,
-        )
+        _validate_target_dir(target_dir)
         self._target_dir = Path(target_dir).resolve()
     
     def set_custom_template(self, custom_template: Optional[str]) -> None:
@@ -275,15 +275,7 @@ class Glume:
         
         :param custom_template: Optional Jinja2 template string for rendering the output.
         """
-        _validate_inputs(
-            target_dir=self._target_dir,
-            custom_template=custom_template,
-            ignore_patterns=None,
-            include_patterns=None,
-            use_gitignore=False,
-            include_tree=self._include_tree,
-            verbose=self._verbose,
-        )
+        _validate_custom_template(custom_template)
         self._custom_template = custom_template or DEFAULT_TEMPLATE
 
     def set_ignore_patterns(self, ignore_patterns: Optional[List[str]]) -> None:
@@ -292,15 +284,7 @@ class Glume:
         
         :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
         """
-        _validate_inputs(
-            target_dir=self._target_dir,
-            custom_template=self._custom_template,
-            ignore_patterns=ignore_patterns,
-            include_patterns=None,
-            use_gitignore=False,
-            include_tree=self._include_tree,
-            verbose=self._verbose,
-        )
+        _validate_ignore_patterns(ignore_patterns)
 
         patterns = list(ignore_patterns) if ignore_patterns else []
 
@@ -326,15 +310,7 @@ class Glume:
         
         :param pattern: An ignore pattern
         """
-        _validate_inputs(
-            target_dir=self._target_dir,
-            custom_template=self._custom_template,
-            ignore_patterns=[pattern],
-            include_patterns=None,
-            use_gitignore=False,
-            include_tree=self._include_tree,
-            verbose=self._verbose,
-        )
+        _validate_ignore_patterns([pattern])
 
         patterns = list(self._active_ignores or [])
 
@@ -349,15 +325,7 @@ class Glume:
         
         :param include_patterns: Optional list of glob patterns for files and directories to include.
         """
-        _validate_inputs(
-            target_dir=self._target_dir,
-            custom_template=self._custom_template,
-            ignore_patterns=None,
-            include_patterns=include_patterns,
-            use_gitignore=False,
-            include_tree=self._include_tree,
-            verbose=self._verbose,
-        )
+        _validate_include_patterns(include_patterns)
 
         self._active_includes = list(include_patterns) if include_patterns else None
 
@@ -377,15 +345,7 @@ class Glume:
         
         :param pattern: An include pattern
         """
-        _validate_inputs(
-            target_dir=self._target_dir,
-            custom_template=self._custom_template,
-            ignore_patterns=None,
-            include_patterns=[pattern],
-            use_gitignore=False,
-            include_tree=self._include_tree,
-            verbose=self._verbose,
-        )
+        _validate_include_patterns([pattern])
 
         patterns = list(self._active_includes or [])
 
@@ -400,15 +360,7 @@ class Glume:
         
         :param include_tree: If True, includes the directory tree in the output.
         """
-        _validate_inputs(
-            target_dir=self._target_dir,
-            custom_template=self._custom_template,
-            ignore_patterns=None,
-            include_patterns=None,
-            use_gitignore=False,
-            include_tree=include_tree,
-            verbose=self._verbose,
-        )
+        _validate_include_tree(include_tree)
         self._include_tree = include_tree
 
     def set_verbose(self, verbose: bool) -> None:
@@ -417,15 +369,7 @@ class Glume:
         
         :param verbose: If True, prints warnings when files cannot be read.
         """
-        _validate_inputs(
-            target_dir=self._target_dir,
-            custom_template=self._custom_template,
-            ignore_patterns=None,
-            include_patterns=None,
-            use_gitignore=False,
-            include_tree=self._include_tree,
-            verbose=verbose,
-        )
+        _validate_verbose(verbose)
         self._verbose = verbose
     
     @property
