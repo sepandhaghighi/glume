@@ -65,25 +65,12 @@ def _load_config(
         raise GlumeValidationError(INVALID_CONFIG_FILE_ERROR.format(error=e))
 
 
-def _validate_inputs(
-    target_dir: Any,
-    custom_template: Any,
-    ignore_patterns: Any,
-    include_patterns: Any,
-    use_gitignore: Any,
-    include_tree: Any,
-    verbose: Any,
-) -> None:
-    """
-    Validate the arguments provided to Glume.
 
+def _validate_target_dir(target_dir: Any) -> None:
+    """
+    Validate the target directory.
+    
     :param target_dir: Root directory containing files to pack.
-    :param custom_template: Optional Jinja2 template string for rendering the output.
-    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
-    :param include_patterns: Optional list of glob patterns for files and directories to include.
-    :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
-    :param include_tree: If True, includes the directory tree in the output.
-    :param verbose: If True, prints warnings when files cannot be read.
     """
     if not isinstance(target_dir, (str, Path)):
         raise GlumeValidationError(TARGET_DIR_TYPE_ERROR)
@@ -96,10 +83,24 @@ def _validate_inputs(
     if not target_path.is_dir():
         raise GlumeValidationError(TARGET_DIR_INVALID_ERROR.format(path=target_path))
 
+
+def _validate_custom_template(custom_template: Any) -> None:
+    """
+    Validate the custom template.
+    
+    :param custom_template: Optional Jinja2 template string for rendering the output.
+    """
     if custom_template is not None:
         if not isinstance(custom_template, str) or not custom_template.strip():
             raise GlumeValidationError(CUSTOM_TEMPLATE_TYPE_ERROR)
 
+
+def _validate_ignore_patterns(ignore_patterns: Any) -> None:
+    """
+    Validate the ignore patterns.
+    
+    :param ignore_patterns: Optional list of glob patterns for files and directories to ignore.
+    """
     if ignore_patterns is not None:
         if not isinstance(ignore_patterns, list):
             raise GlumeValidationError(IGNORE_PATTERNS_TYPE_ERROR)
@@ -108,6 +109,13 @@ def _validate_inputs(
             if not isinstance(pattern, str) or not pattern.strip():
                 raise GlumeValidationError(IGNORE_PATTERN_TYPE_ERROR.format(index=index))
 
+
+def _validate_include_patterns(include_patterns: Any) -> None:
+    """
+    Validate the include patterns.
+    
+    :param include_patterns: Optional list of glob patterns for files and directories to include.
+    """
     if include_patterns is not None:
         if not isinstance(include_patterns, list):
             raise GlumeValidationError(INCLUDE_PATTERNS_TYPE_ERROR)
@@ -116,15 +124,35 @@ def _validate_inputs(
             if not isinstance(pattern, str) or not pattern.strip():
                 raise GlumeValidationError(INCLUDE_PATTERN_TYPE_ERROR.format(index=index))
 
-    boolean_arguments = {
-        "use_gitignore": use_gitignore,
-        "include_tree": include_tree,
-        "verbose": verbose,
-    }
 
-    for name, value in boolean_arguments.items():
-        if not isinstance(value, bool):
-            raise GlumeValidationError(BOOLEAN_ARGUMENT_TYPE_ERROR.format(name=name))
+def _validate_use_gitignore(use_gitignore: Any) -> None:
+    """
+    Validate the use_gitignore argument.
+    
+    :param use_gitignore: If True, loads ignore patterns from the root directory's .gitignore file.
+    """
+    if not isinstance(use_gitignore, bool):
+        raise GlumeValidationError(BOOLEAN_ARGUMENT_TYPE_ERROR.format(name="use_gitignore"))
+
+
+def _validate_include_tree(include_tree: Any) -> None:
+    """
+    Validate the include_tree argument.
+    
+    :param include_tree: If True, includes the directory tree in the output.
+    """
+    if not isinstance(include_tree, bool):
+        raise GlumeValidationError(BOOLEAN_ARGUMENT_TYPE_ERROR.format(name="include_tree"))
+
+
+def _validate_verbose(verbose: Any) -> None:
+    """
+    Validate the verbose argument.
+    
+    :param verbose: If True, prints warnings when files cannot be read.
+    """
+    if not isinstance(verbose, bool):
+        raise GlumeValidationError(BOOLEAN_ARGUMENT_TYPE_ERROR.format(name="verbose"))
 
 
 def _load_gitignore_patterns(root_path: Path) -> List[str]:
