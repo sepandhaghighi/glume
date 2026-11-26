@@ -83,7 +83,7 @@ def test_validation_error_for_non_boolean_flags(tmp_path, argument):
 def test_validation_error_for_set_target_dir(tmp_path):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError, match="target_dir must exist and be a directory"):
+    with pytest.raises(GlumeValidationError, match="target_dir must be a string or pathlib.Path."):
         packer.set_target_dir(123)
 
 
@@ -107,7 +107,7 @@ def test_validation_error_for_set_ignore_patterns(tmp_path, patterns):
 def test_validation_error_for_add_ignore_pattern(tmp_path, pattern):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError, match=r"ignore_patterns\[0\] must be a non-empty string."):
+    with pytest.raises(GlumeValidationError, match=r"ignore_patterns\[1\] must be a non-empty string."):
         packer.add_ignore_pattern(pattern)
 
 
