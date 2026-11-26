@@ -83,7 +83,7 @@ def test_validation_error_for_non_boolean_flags(tmp_path, argument):
 def test_validation_error_for_set_target_dir(tmp_path):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError):
+    with pytest.raises(GlumeValidationError, match="target_dir must exist and be a directory"):
         packer.set_target_dir(123)
 
 
@@ -91,7 +91,7 @@ def test_validation_error_for_set_target_dir(tmp_path):
 def test_validation_error_for_set_custom_template(tmp_path, template):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError):
+    with pytest.raises(GlumeValidationError, match="custom_template must be a non-empty string or None"):
         packer.set_custom_template(template)
 
 
@@ -99,7 +99,7 @@ def test_validation_error_for_set_custom_template(tmp_path, template):
 def test_validation_error_for_set_ignore_patterns(tmp_path, patterns):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError):
+    with pytest.raises(GlumeValidationError, match="ignore_patterns must be a list of non-empty strings or None"):
         packer.set_ignore_patterns(patterns)
 
 
@@ -107,7 +107,7 @@ def test_validation_error_for_set_ignore_patterns(tmp_path, patterns):
 def test_validation_error_for_add_ignore_pattern(tmp_path, pattern):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError):
+    with pytest.raises(GlumeValidationError, match=r"ignore_patterns\[0\] must be a non-empty string."):
         packer.add_ignore_pattern(pattern)
 
 
@@ -115,7 +115,7 @@ def test_validation_error_for_add_ignore_pattern(tmp_path, pattern):
 def test_validation_error_for_remove_ignore_pattern(tmp_path, pattern):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError):
+    with pytest.raises(GlumeValidationError, match=r"ignore_patterns\[0\] must be a non-empty string."):
         packer.remove_ignore_pattern(pattern)
 
 
@@ -123,7 +123,7 @@ def test_validation_error_for_remove_ignore_pattern(tmp_path, pattern):
 def test_validation_error_for_set_include_patterns(tmp_path, patterns):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError):
+    with pytest.raises(GlumeValidationError, match="include_patterns must be a list of non-empty strings or None"):
         packer.set_include_patterns(patterns)
 
 
@@ -131,7 +131,7 @@ def test_validation_error_for_set_include_patterns(tmp_path, patterns):
 def test_validation_error_for_add_include_pattern(tmp_path, pattern):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError):
+    with pytest.raises(GlumeValidationError, match=r"include_patterns\[0\] must be a non-empty string."):
         packer.add_include_pattern(pattern)
 
 
@@ -139,7 +139,7 @@ def test_validation_error_for_add_include_pattern(tmp_path, pattern):
 def test_validation_error_for_remove_include_pattern(tmp_path, pattern):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError):
+    with pytest.raises(GlumeValidationError, match=r"include_patterns\[0\] must be a non-empty string."):
         packer.remove_include_pattern(pattern)
 
 
@@ -147,7 +147,7 @@ def test_validation_error_for_remove_include_pattern(tmp_path, pattern):
 def test_validation_error_for_set_include_tree(tmp_path, value):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError):
+    with pytest.raises(GlumeValidationError, match=f"include_tree must be a boolean"):
         packer.set_include_tree(value)
 
 
@@ -155,5 +155,5 @@ def test_validation_error_for_set_include_tree(tmp_path, value):
 def test_validation_error_for_set_verbose(tmp_path, value):
     packer = Glume(target_dir=tmp_path)
 
-    with pytest.raises(GlumeValidationError):
+    with pytest.raises(GlumeValidationError, match=f"verbose must be a boolean"):
         packer.set_verbose(value)
