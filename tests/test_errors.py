@@ -78,3 +78,82 @@ def test_validation_error_for_non_boolean_flags(tmp_path, argument):
 
     with pytest.raises(GlumeValidationError, match=f"{argument} must be a boolean"):
         Glume(target_dir=tmp_path, **values)
+
+
+def test_validation_error_for_set_target_dir(tmp_path):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(GlumeValidationError):
+        packer.set_target_dir(123)
+
+
+@pytest.mark.parametrize("template", [123, "", "   "])
+def test_validation_error_for_set_custom_template(tmp_path, template):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(GlumeValidationError):
+        packer.set_custom_template(template)
+
+
+@pytest.mark.parametrize("patterns", ["*.py", (), 123])
+def test_validation_error_for_set_ignore_patterns(tmp_path, patterns):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(GlumeValidationError):
+        packer.set_ignore_patterns(patterns)
+
+
+@pytest.mark.parametrize("pattern", [123, "", "   ", None])
+def test_validation_error_for_add_ignore_pattern(tmp_path, pattern):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(GlumeValidationError):
+        packer.add_ignore_pattern(pattern)
+
+
+@pytest.mark.parametrize("pattern", [123, "", "   ", None])
+def test_validation_error_for_remove_ignore_pattern(tmp_path, pattern):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(GlumeValidationError):
+        packer.remove_ignore_pattern(pattern)
+
+
+@pytest.mark.parametrize("patterns", ["*.py", (), 123])
+def test_validation_error_for_set_include_patterns(tmp_path, patterns):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(GlumeValidationError):
+        packer.set_include_patterns(patterns)
+
+
+@pytest.mark.parametrize("pattern", [123, "", "   ", None])
+def test_validation_error_for_add_include_pattern(tmp_path, pattern):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(GlumeValidationError):
+        packer.add_include_pattern(pattern)
+
+
+@pytest.mark.parametrize("pattern", [123, "", "   ", None])
+def test_validation_error_for_remove_include_pattern(tmp_path, pattern):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(GlumeValidationError):
+        packer.remove_include_pattern(pattern)
+
+
+@pytest.mark.parametrize("value", [1, "true", None])
+def test_validation_error_for_set_include_tree(tmp_path, value):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(GlumeValidationError):
+        packer.set_include_tree(value)
+
+
+@pytest.mark.parametrize("value", [1, "true", None])
+def test_validation_error_for_set_verbose(tmp_path, value):
+    packer = Glume(target_dir=tmp_path)
+
+    with pytest.raises(GlumeValidationError):
+        packer.set_verbose(value)
