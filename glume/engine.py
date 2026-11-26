@@ -38,6 +38,7 @@ from .utils import (
 class Glume:
     """Pack directory files into a formatted text representation."""
 
+    
     def __init__(
         self,
         target_dir: Union[str, Path] = DEFAULT_TARGET_DIR,
@@ -59,37 +60,25 @@ class Glume:
         :param include_tree: If True, includes the directory tree in the output.
         :param verbose: If True, prints warnings when files cannot be read.
         """
-        _validate_target_dir(target_dir)
-        _validate_custom_template(custom_template)
-        _validate_ignore_patterns(ignore_patterns)
-        _validate_include_patterns(include_patterns)
         _validate_use_gitignore(use_gitignore)
-        _validate_include_tree(include_tree)
-        _validate_verbose(verbose)
 
-        self._target_dir = Path(target_dir).resolve()
-        self._custom_template = custom_template or DEFAULT_TEMPLATE
-        self._include_tree = include_tree
-        self._verbose = verbose
-
-        active_ignores = list(ignore_patterns) if ignore_patterns else []
-
-        for pattern in DEFAULT_IGNORE_PATTERNS:
-            if pattern not in active_ignores:
-                active_ignores.append(pattern)
+        self.set_target_dir(target_dir)
+        self.set_custom_template(custom_template)
+        self.set_ignore_patterns(ignore_patterns)
+        self.set_include_patterns(include_patterns)
+        self.set_include_tree(include_tree)
+        self.set_verbose(verbose)
 
         if use_gitignore:
             git_ignores = _load_gitignore_patterns(self._target_dir)
-            active_ignores.extend(git_ignores)
-
-        self._active_ignores = active_ignores if active_ignores else None
-        self._active_includes = list(include_patterns) if include_patterns else None
+            for pattern in git_ignores:
+                self.add_ignore_pattern(pattern)
 
         self._included_files: List[str] = []
         self._ignored_paths: List[str] = []
         self._binary_files: List[str] = []
         self._failed_files: List[Dict[str, str]] = []
-
+        
     def collect_files(self) -> List[dict]:
         """Collect readable, non-binary files from the target directory."""
         self._included_files = []
