@@ -8,7 +8,18 @@ from datetime import datetime
 from uuid import uuid4
 from typing import List, Optional, Union, Dict
 from memor import Prompt, PromptTemplate, TemplateEngine
-from .params import DEFAULT_TEMPLATE
+from .params import (
+    DEFAULT_TEMPLATE,
+    DEFAULT_TARGET_DIR,
+    DEFAULT_USE_GITIGNORE,
+    DEFAULT_INCLUDE_TREE,
+    DEFAULT_VERBOSE,
+    DEFAULT_AUTO_DISCOVER,
+    DEFAULT_IGNORE_PATTERNS,
+    DEFAULT_REPORT_PREFIX,
+    DEFAULT_REPORT_TIMESTAMP_FORMAT,
+    DEFAULT_REPORT_EXTENSION,
+)
 from .utils import _load_gitignore_patterns, _matches_patterns, _is_binary_file, _load_config
 from .utils import _build_tree_structure, _validate_inputs, _filter_ignored_directories
 
@@ -16,17 +27,15 @@ from .utils import _build_tree_structure, _validate_inputs, _filter_ignored_dire
 class Glume:
     """Pack directory files into a formatted text representation."""
 
-    DEFAULT_IGNORE_PATTERN = "glume_report_*.txt"
-
     def __init__(
         self,
-        target_dir: Union[str, Path] = ".",
+        target_dir: Union[str, Path] = DEFAULT_TARGET_DIR,
         custom_template: Optional[str] = None,
         ignore_patterns: Optional[List[str]] = None,
         include_patterns: Optional[List[str]] = None,
-        use_gitignore: bool = False,
-        include_tree: bool = True,
-        verbose: bool = False
+        use_gitignore: bool = DEFAULT_USE_GITIGNORE,
+        include_tree: bool = DEFAULT_INCLUDE_TREE,
+        verbose: bool = DEFAULT_VERBOSE
     ):
         """
         Initialize the Glume packer.
@@ -56,8 +65,9 @@ class Glume:
 
         active_ignores = list(ignore_patterns) if ignore_patterns else []
 
-        if self.DEFAULT_IGNORE_PATTERN not in active_ignores:
-            active_ignores.append(self.DEFAULT_IGNORE_PATTERN)
+        for pattern in DEFAULT_IGNORE_PATTERNS:
+            if pattern not in active_ignores:
+                active_ignores.append(pattern)
 
         if use_gitignore:
             git_ignores = _load_gitignore_patterns(self._target_dir)
@@ -165,9 +175,9 @@ class Glume:
         :param output_path: Optional output path.
         """
         if output_path is None:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+            timestamp = datetime.now().strftime(DEFAULT_REPORT_TIMESTAMP_FORMAT)
             unique_id = uuid4().hex[:8]
-            output_path = Path.cwd() / f"glume_report_{timestamp}_{unique_id}.txt"
+            output_path = Path.cwd() / (f"{DEFAULT_REPORT_PREFIX}{timestamp}_{unique_id}{DEFAULT_REPORT_EXTENSION}")
 
         output_path = Path(output_path).resolve()
         original_ignores = self._active_ignores
@@ -202,7 +212,7 @@ class Glume:
         use_gitignore: Optional[bool] = None,
         include_tree: Optional[bool] = None,
         verbose: Optional[bool] = None,
-        auto_discover: bool = False,
+        auto_discover: bool = DEFAULT_AUTO_DISCOVER,
     ) -> "Glume":
         """
         Create a Glume instance from a config file or dictionary.
@@ -226,11 +236,11 @@ class Glume:
         resolved_include_patterns = list(loaded_config.get("include_patterns", []))
         resolved_include_patterns.extend(include_patterns or [])
 
-        resolved_target_dir = target_dir if target_dir is not None else loaded_config.get("target_dir", ".")
+        resolved_target_dir = target_dir if target_dir is not None else loaded_config.get("target_dir", DEFAULT_TARGET_DIR)
         resolved_custom_template = custom_template if custom_template is not None else loaded_config.get("custom_template")
-        resolved_use_gitignore = use_gitignore if use_gitignore is not None else loaded_config.get("use_gitignore", False)
-        resolved_include_tree = include_tree if include_tree is not None else loaded_config.get("include_tree", True)
-        resolved_verbose = verbose if verbose is not None else loaded_config.get("verbose", False)
+        resolved_use_gitignore = use_gitignore if use_gitignore is not None else loaded_config.get("use_gitignore", DEFAULT_USE_GITIGNORE)
+        resolved_include_tree = include_tree if include_tree is not None else loaded_config.get("include_tree", DEFAULT_INCLUDE_TREE)
+        resolved_verbose = verbose if verbose is not None else loaded_config.get("verbose", DEFAULT_VERBOSE)
 
         return cls(
             target_dir=resolved_target_dir,
